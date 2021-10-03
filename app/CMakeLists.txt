@@ -1,4 +1,4 @@
-add_library(engine SHARED window.cpp)
+add_library(app SHARED app.cpp)
 
 find_package(OpenGL REQUIRED)
 
@@ -7,9 +7,10 @@ target_include_directories(engine PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
-target_link_libraries(engine
+target_link_libraries(app
     precompiledHeaders
     ${OPENGL_LIBRARIES}
     glfw
     events
+    engine
 )

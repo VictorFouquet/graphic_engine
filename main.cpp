@@ -1,9 +1,10 @@
 #include "precompiledHeaders.h"
 #include "event.h"
 #include "window.h"
+#include "app.h"
 
 int main()
 {
-    std::cout << "Hello Engine!" << std::endl;
-    return 0;
+    GraphicEngine::App app = GraphicEngine::App();
+    app.run();
 }
