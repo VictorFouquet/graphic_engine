@@ -1,5 +1,6 @@
 #include "precompiledHeaders.h"
 #include "event.h"
+#include "window.h"
 
 int main()
 {
