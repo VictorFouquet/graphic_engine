@@ -1,4 +1,5 @@
 #include "engine.h"
+#include "imGuiLayer.h"
 
 namespace GraphicEngine
 {
@@ -12,6 +13,9 @@ namespace GraphicEngine
 
         window = Window::create();
         window->setEventCallback(BIND_EVENT_FN(onEvent));
+
+        imGuiLayer = new ImGuiLayer();
+        pushOverlay(imGuiLayer);
     }
 
     Engine::~Engine()
@@ -21,13 +25,13 @@ namespace GraphicEngine
     void Engine::pushLayer(Layer* layer)
     {
         _layerStack.pushLayer(layer);
-        layer->onAttach(getWindow().getGLFWWindow());
+        layer->onAttach();
     }
     
     void Engine::pushOverlay(Layer* layer)
     {
         _layerStack.pushOverlay(layer);
-        layer->onAttach(getWindow().getGLFWWindow());
+        layer->onAttach();
     }
     
     void Engine::onEvent(Event& e)
@@ -50,8 +54,14 @@ namespace GraphicEngine
         {
             glClearColor(0.1,0.1,0.1,1);
             glClear(GL_COLOR_BUFFER_BIT);
+
             for (Layer* layer: _layerStack)
                 layer->onUpdate();
+
+            imGuiLayer->begin();
+            for (Layer* layer: _layerStack)
+                layer->onImGuiRender();
+            imGuiLayer->end();
 
             std::cout << "[INPUT] MousePos: (" << Input::getMouseX() << ", " << Input::getMouseY() << ")\n";
 

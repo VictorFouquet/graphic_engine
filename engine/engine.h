@@ -7,6 +7,7 @@
 #include "window.h"
 #include "layer.h"
 #include "layerStack.h"
+#include "imGuiLayer.h"
 
 #include "event.h"
 #include "applicationEvent.h"
@@ -17,6 +18,8 @@
 
 namespace GraphicEngine
 {
+    class ImGuiLayer;
+
     class Engine
     {
     public:
@@ -32,6 +35,8 @@ namespace GraphicEngine
         inline Window& getWindow() { return *window; }
     private:
         Window* window;
+        ImGuiLayer* imGuiLayer;
+
         static Engine* _instance;
 
         bool _running = true;

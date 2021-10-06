@@ -1,6 +1,5 @@
 #include "client.h"
 #include "exampleLayers.h"
-#include "imGuiLayer.h"
 
 ClientApp::ClientApp() : GraphicEngine::Engine()
 {
@@ -8,7 +7,6 @@ ClientApp::ClientApp() : GraphicEngine::Engine()
 
     engine.pushLayer(new ExampleLayer());
     engine.pushOverlay(new ExampleLayer2());
-    engine.pushOverlay(new ImGuiLayer());
 
     engine.run();
 }

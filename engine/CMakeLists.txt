@@ -4,6 +4,7 @@ add_library(engine SHARED
     layerStack.cpp
     input.cpp
     engine.cpp
+    imGuiLayer.cpp
 )
 
 find_package(GLEW REQUIRED)

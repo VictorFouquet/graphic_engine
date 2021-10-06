@@ -1,6 +1,5 @@
 add_library(client SHARED
     client.cpp
-    imGuiLayer.cpp
 )
 
 target_include_directories(engine PUBLIC
