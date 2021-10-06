@@ -48,6 +48,12 @@ namespace GraphicEngine
         glfwSetWindowUserPointer(window, &data);
         setVSync(true);
 
+        if (glewInit() != GLEW_OK) {
+            std::cout << "Failed to initialize GLEW" << std::endl;
+            getchar();
+            glfwTerminate();
+        }
+
         // Sets GLFW callbacks
         glfwSetWindowSizeCallback(window, [](GLFWwindow* window, int width, int height)
         {

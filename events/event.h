@@ -45,7 +45,9 @@ namespace GraphicEngine
         {
             return getCategoryFlags() & category;
         }
-    
+
+        inline bool isHandled() const { return handled; }
+        inline void setHandled(bool _handled) { handled = _handled; }
     protected:
         bool handled = false;
     };

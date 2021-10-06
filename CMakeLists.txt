@@ -6,15 +6,17 @@ add_subdirectory(vendor)
 add_subdirectory(precompiled_headers)
 add_subdirectory(events)
 add_subdirectory(engine)
-add_subdirectory(app)
+add_subdirectory(logic)
+add_subdirectory(client)
 
 add_executable(GraphicEngine
     main.cpp
 )
 
 target_link_libraries(GraphicEngine
+    logic
     precompiledHeaders
     events
     engine
-    app
+    client
 )

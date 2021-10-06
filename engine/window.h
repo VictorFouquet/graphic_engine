@@ -1,6 +1,10 @@
 #pragma once
 
+#include <GL/glew.h>
 #include <GLFW/glfw3.h>
+#include "imgui.h"
+#include "imgui_impl_glfw.h"
+#include "imgui_impl_opengl3.h"
 
 #include "precompiledHeaders.h"
 #include "event.h"
@@ -28,6 +32,7 @@ namespace GraphicEngine
 
         void onUpdate();
         
+        inline GLFWwindow* getGLFWWindow() const { return window; }
         inline unsigned int getWidth() const { return data.width; };
         inline unsigned int getHeight() const { return data.height; };
 
