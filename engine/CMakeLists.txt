@@ -5,6 +5,8 @@ add_library(engine SHARED
     input.cpp
     engine.cpp
     imGuiLayer.cpp
+    openGLContext.cpp
+    shader.cpp
 )
 
 find_package(GLEW REQUIRED)
@@ -25,6 +27,7 @@ target_link_libraries(engine
     ${GLEW_LIBRARIES}
     ${OPENGL_LIBRARIES}
     glfw
+    glm
     imgui
     logic
 )

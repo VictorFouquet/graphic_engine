@@ -1,13 +1,15 @@
 #pragma once
 
-#include <GL/glew.h>
+#include "precompiledHeaders.h"
+#include "event.h"
+#include "graphicsContext.h"
+#include "openGLContext.h"
+
 #include <GLFW/glfw3.h>
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
 
-#include "precompiledHeaders.h"
-#include "event.h"
 
 namespace GraphicEngine
 {
@@ -46,7 +48,8 @@ namespace GraphicEngine
         virtual void shutdown();
     private:
         GLFWwindow* window;
-
+        GraphicsContext* _context;
+        
         struct WindowData
         {
             std::string title;

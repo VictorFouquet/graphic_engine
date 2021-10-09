@@ -2,12 +2,14 @@
 
 #include "precompiledHeaders.h"
 
+#include "glm/glm.hpp"
 #include "logic.h"
 
 #include "window.h"
 #include "layer.h"
 #include "layerStack.h"
 #include "imGuiLayer.h"
+#include "shader.h"
 
 #include "event.h"
 #include "applicationEvent.h"
@@ -42,6 +44,9 @@ namespace GraphicEngine
         bool _running = true;
         LayerStack _layerStack;
         
+        unsigned int _vertexArray, _vertexBuffer, _indexBuffer;
+        Shader* _shader;
+
         bool onWindowClose(WindowCloseEvent& e);
         bool handleKeyPress(KeyPressedEvent& e);
         bool handleMouseButtonPressed(MouseMovedEvent& e);

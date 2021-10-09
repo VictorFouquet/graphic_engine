@@ -43,16 +43,13 @@ namespace GraphicEngine
             std::cout << "Failed to open GLFW window. If you have an Intel GPU, they are not 3.3 compatible.\n";
             glfwTerminate();
         }
+
+        _context = new OpenGLContext(window);
+        _context->init();
         
-        glfwMakeContextCurrent(window);
+
         glfwSetWindowUserPointer(window, &data);
         setVSync(true);
-
-        if (glewInit() != GLEW_OK) {
-            std::cout << "Failed to initialize GLEW" << std::endl;
-            getchar();
-            glfwTerminate();
-        }
 
         // Sets GLFW callbacks
         glfwSetWindowSizeCallback(window, [](GLFWwindow* window, int width, int height)
@@ -145,7 +142,7 @@ namespace GraphicEngine
     void Window::onUpdate()
     {
         glfwPollEvents();
-        glfwSwapBuffers(window);
+        _context->swapBuffers();
     }
 
     void Window::setVSync(bool enabled)
