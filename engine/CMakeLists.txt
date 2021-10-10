@@ -7,6 +7,9 @@ add_library(engine SHARED
     imGuiLayer.cpp
     openGLContext.cpp
     shader.cpp
+    renderer.cpp
+    openGLBuffer.cpp
+    buffer.cpp
 )
 
 find_package(GLEW REQUIRED)

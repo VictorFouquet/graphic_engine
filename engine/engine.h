@@ -10,7 +10,7 @@
 #include "layerStack.h"
 #include "imGuiLayer.h"
 #include "shader.h"
-
+#include "buffer.h"
 #include "event.h"
 #include "applicationEvent.h"
 #include "keyEvent.h"
@@ -44,7 +44,10 @@ namespace GraphicEngine
         bool _running = true;
         LayerStack _layerStack;
         
-        unsigned int _vertexArray, _vertexBuffer, _indexBuffer;
+        unsigned int _vertexArray;
+        VertexBuffer* _vertexBuffer;
+        IndexBuffer* _indexBuffer;
+        
         Shader* _shader;
 
         bool onWindowClose(WindowCloseEvent& e);
