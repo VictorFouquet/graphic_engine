@@ -10,6 +10,8 @@ add_library(engine SHARED
     renderer.cpp
     openGLBuffer.cpp
     buffer.cpp
+    openGLVertexArray.cpp
+    vertexArray.cpp
 )
 
 find_package(GLEW REQUIRED)

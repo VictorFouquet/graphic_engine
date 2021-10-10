@@ -11,6 +11,7 @@
 #include "imGuiLayer.h"
 #include "shader.h"
 #include "buffer.h"
+#include "vertexArray.h"
 #include "event.h"
 #include "applicationEvent.h"
 #include "keyEvent.h"
@@ -44,11 +45,11 @@ namespace GraphicEngine
         bool _running = true;
         LayerStack _layerStack;
         
-        unsigned int _vertexArray;
-        VertexBuffer* _vertexBuffer;
-        IndexBuffer* _indexBuffer;
-        
-        Shader* _shader;
+        std::shared_ptr<VertexArray>  _vertexArray;
+        std::shared_ptr<VertexArray>  _squareVA;
+
+        std::shared_ptr<Shader> _shader;
+        std::shared_ptr<Shader> _blueShader;
 
         bool onWindowClose(WindowCloseEvent& e);
         bool handleKeyPress(KeyPressedEvent& e);
