@@ -7,6 +7,26 @@ namespace GraphicEngine
     
     Engine* Engine::_instance = nullptr;
 
+    static GLenum ShaderDataTypeToOpenGLBaseType(ShaderDataType type)
+    {
+        switch (type)
+        {
+            case ShaderDataType::Float:  return GL_FLOAT;
+            case ShaderDataType::Float2: return GL_FLOAT;
+            case ShaderDataType::Float3: return GL_FLOAT;
+            case ShaderDataType::Float4: return GL_FLOAT;
+            case ShaderDataType::Int:    return GL_INT;
+            case ShaderDataType::Int2:   return GL_INT;
+            case ShaderDataType::Int3:   return GL_INT;
+            case ShaderDataType::Int4:   return GL_INT;
+            case ShaderDataType::Mat3:   return GL_FLOAT;
+            case ShaderDataType::Mat4:   return GL_FLOAT;
+            case ShaderDataType::Bool:   return GL_BOOL;
+
+            default:                     return 0;
+        }
+    }
+
     Engine::Engine()
     {
         _instance = this;
@@ -20,17 +40,41 @@ namespace GraphicEngine
         glGenVertexArrays(1, &_vertexArray);
         glBindVertexArray(_vertexArray);
 
-        float vertices[3 * 3] = {
-            -0.5f, -0.5f, 0.0f,
-             0.5f, -0.5f, 0.0f,
-             0.0f,  0.5f, 0.0f
+        float vertices[3 * 7] = {
+            -0.5f, -0.5f, 0.0f, 0.8f, 0.2f, 0.8f, 1.0f,
+             0.5f, -0.5f, 0.0f, 0.2f, 0.2f, 0.8f, 1.0f,
+             0.0f,  0.5f, 0.0f, 0.8f, 0.8f, 0.2f, 1.0f
         };
 
         _vertexBuffer = VertexBuffer::create(vertices, sizeof(vertices));
         _vertexBuffer->bind();
 
-        glEnableVertexAttribArray(0);
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), nullptr);
+        {       
+            BufferLayout layout = {
+                { ShaderDataType::Float3, "aPos" },
+                { ShaderDataType::Float4, "aColor" }
+            };
+            
+            _vertexBuffer->setLayout(layout);
+        }
+        
+        uint32_t index = 0;
+
+        const auto& layout = _vertexBuffer->getLayout();
+
+        for (const auto& element : layout)
+        {
+            glEnableVertexAttribArray(index);
+            glVertexAttribPointer(
+                index,
+                element.getComponentCount(),
+                ShaderDataTypeToOpenGLBaseType(element.type),
+                element.normalized ? GL_TRUE : GL_FALSE,
+                layout.getStride(),
+                (const void *)(intptr_t)element.offset
+            );
+            index++;
+        }
 
         uint32_t indices[3] = { 0, 1, 2 };
 
@@ -41,12 +85,15 @@ namespace GraphicEngine
             #version 330 core
 
             layout (location = 0) in vec3 aPos;
+            layout (location = 1) in vec4 aColor;
 
             out vec3 vPosition;
+            out vec4 vColor;
 
             void main()
             {
                 vPosition = aPos;
+                vColor = aColor;
                 gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);
             };
         )";
@@ -57,10 +104,12 @@ namespace GraphicEngine
             layout(location=0) out vec4 color;
 
             in vec3 vPosition;
+            in vec4 vColor;
 
             void main()
             {
                 color = vec4(vPosition * 0.6 + 0.5, 1.0);
+                color = vColor;
             };
         )";
 

@@ -12,11 +12,17 @@ namespace GraphicEngine
         OpenGLVertexBuffer(float* vertices, uint32_t size);
         ~OpenGLVertexBuffer();
 
-        void bind()   const;
-        void unbind() const;
+        void bind()   const override;
+        void unbind() const override;
+
+        inline virtual void setLayout(const BufferLayout layout) override { _layout = layout; };
+        inline virtual const BufferLayout& getLayout() const override { return _layout; }
+
     private:
         uint32_t _rendererID;
+        BufferLayout _layout;
     };
+
 
     class OpenGLIndexBuffer : public IndexBuffer
     {
@@ -24,8 +30,8 @@ namespace GraphicEngine
         OpenGLIndexBuffer(uint32_t* vertices, uint32_t count);
         ~OpenGLIndexBuffer();
 
-        void bind()   const;
-        void unbind() const;
+        void bind()   const override;
+        void unbind() const override;
 
         inline uint32_t getCount() const { return _count; }
     private:
