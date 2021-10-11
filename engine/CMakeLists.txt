@@ -1,21 +1,16 @@
-add_library(engine SHARED
+add_library(engine STATIC
     window.cpp
     layer.cpp
     layerStack.cpp
     input.cpp
     engine.cpp
-    imGuiLayer.cpp
-    openGLContext.cpp
-    shader.cpp
-    renderer.cpp
-    openGLBuffer.cpp
-    buffer.cpp
-    openGLVertexArray.cpp
-    vertexArray.cpp
 )
 
 find_package(GLEW REQUIRED)
 find_package(OpenGL REQUIRED)
+add_subdirectory(openGLImpl)
+add_subdirectory(renderer)
+add_subdirectory(imGuiImpl)
 
 include_directories(
     ${GLEW_INCLUDE_DIRS}
@@ -33,6 +28,8 @@ target_link_libraries(engine
     ${OPENGL_LIBRARIES}
     glfw
     glm
-    imgui
     logic
+    openGLImpl
+    imGuiImpl
+    renderer
 )

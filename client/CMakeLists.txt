@@ -1,4 +1,4 @@
-add_library(client SHARED
+add_library(client STATIC
     client.cpp
 )
 
