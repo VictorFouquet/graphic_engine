@@ -16,6 +16,7 @@ namespace GraphicEngine
         void unbind() const;
     
         void uploadUniformMat4(const std::string name, const glm::mat4 matrix);
+        void uploadUniformFloat4(const std::string name, const glm::vec4 vector);
     private:
         uint32_t _rendererID;
     };

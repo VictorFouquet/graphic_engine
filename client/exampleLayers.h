@@ -107,7 +107,7 @@ public:
 
 
 
-        std::string blueShaderVertexSrc = R"(
+        std::string flatColorShaderVertexSrc = R"(
             #version 330 core
 
             layout (location = 0) in vec3 aPos;
@@ -124,20 +124,22 @@ public:
             };
         )";
 
-        std::string blueShaderFragmentSrc = R"(
+        std::string flatColorShaderFragmentSrc = R"(
             #version 330 core
 
             layout(location=0) out vec4 color;
+
+            uniform vec4 u_Color;
 
             in vec3 vPosition;
 
             void main()
             {
-                color = vec4(0.2, 0.3, 0.8, 1.0);
+                color = u_Color;
             };
         )";
 
-        _blueShader.reset(new GraphicEngine::Shader(blueShaderVertexSrc, blueShaderFragmentSrc));
+        _flatColorShader.reset(new GraphicEngine::Shader(flatColorShaderVertexSrc, flatColorShaderFragmentSrc));
     }
 
     void onUpdate(GraphicEngine::Timestep timestep) override
@@ -183,15 +185,26 @@ public:
         GraphicEngine::Renderer::beginScene(_camera);
 
         glm::mat4 scale = glm::scale(glm::mat4(1.0f), glm::vec3(0.1f));
-        
+        glm::vec4 lightBlueColor(0.1f, 0.2f, 0.7f, 1.0f);
+        glm::vec4 deepBlueColor(0.2f, 0.3f, 0.8f, 1.0f);
+
+        int i = 0;
+
         for (float y = -9.5; y < 10.5; y++)
         {
             for (float x = -9.5; x < 10.5; x++)
             {
+                if (i & 1)
+                    _flatColorShader->uploadUniformFloat4("u_Color", lightBlueColor);
+                else
+                    _flatColorShader->uploadUniformFloat4("u_Color", deepBlueColor);
+                i++;
+
                 glm::vec3 pos(x * 0.11f, y * 0.11f, 0.0f);
                 glm::mat4 transform = glm::translate(glm::mat4(1.0f), pos) * scale;
-                GraphicEngine::Renderer::submit(_blueShader, _squareVA, transform);
+                GraphicEngine::Renderer::submit(_flatColorShader, _squareVA, transform);
             }
+            i++;
         }
 
         glm::mat4 transform = glm::translate(glm::mat4(1.0f), _trianglePosition);
@@ -209,7 +222,7 @@ private:
     std::shared_ptr<GraphicEngine::VertexArray>  _squareVA;
 
     std::shared_ptr<GraphicEngine::Shader> _shader;
-    std::shared_ptr<GraphicEngine::Shader> _blueShader;
+    std::shared_ptr<GraphicEngine::Shader> _flatColorShader;
 
     GraphicEngine::OrthographicCamera _camera;
 
