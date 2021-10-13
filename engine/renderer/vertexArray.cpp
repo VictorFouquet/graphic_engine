@@ -1,5 +1,7 @@
 #include "vertexArray.h"
 #include "openGLVertexArray.h"
+#include "renderer.h"
+#include "rendererAPI.h"
 
 namespace GraphicEngine
 {
@@ -8,10 +10,10 @@ namespace GraphicEngine
     {
         switch (Renderer::getAPI())
         {
-        case RendererAPI::None: 
+        case RendererAPI::API::None: 
             std::cout << "[INFO] RendererAPI::None is not yet supported." << std::endl;
             return nullptr;
-        case RendererAPI::OpenGL:
+        case RendererAPI::API::OpenGL:
             return new OpenGLVertexArray();
         }
         

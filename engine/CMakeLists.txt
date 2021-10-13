@@ -1,15 +1,15 @@
 add_library(engine STATIC
-    window.cpp
+    engine.cpp
+    input.cpp
     layer.cpp
     layerStack.cpp
-    input.cpp
-    engine.cpp
+    window.cpp
 )
 
 find_package(GLEW REQUIRED)
 find_package(OpenGL REQUIRED)
-add_subdirectory(openGLImpl)
 add_subdirectory(renderer)
+add_subdirectory(openGLImpl)
 add_subdirectory(imGuiImpl)
 
 include_directories(
@@ -22,10 +22,10 @@ target_include_directories(engine PUBLIC
 )
 
 target_link_libraries(engine
-    events
-    precompiledHeaders
     ${GLEW_LIBRARIES}
     ${OPENGL_LIBRARIES}
+    events
+    precompiledHeaders
     glfw
     glm
     logic

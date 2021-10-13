@@ -1,6 +1,7 @@
 add_library(openGLImpl STATIC
-    openGLContext.cpp
     openGLBuffer.cpp
+    openGLContext.cpp
+    openGLRendererAPI.cpp
     openGLVertexArray.cpp
 )
 
@@ -21,4 +22,5 @@ target_link_libraries(openGLImpl
     glm
     glfw
     engine
+    renderer
 )

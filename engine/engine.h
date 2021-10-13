@@ -5,6 +5,7 @@
 #include "glm/glm.hpp"
 #include "logic.h"
 
+#include "renderer.h"
 #include "window.h"
 #include "layer.h"
 #include "layerStack.h"
@@ -12,6 +13,7 @@
 #include "shader.h"
 #include "buffer.h"
 #include "vertexArray.h"
+
 #include "event.h"
 #include "applicationEvent.h"
 #include "keyEvent.h"

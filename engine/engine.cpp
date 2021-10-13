@@ -177,18 +177,20 @@ namespace GraphicEngine
     {
         while(_running)
         {
-            glClearColor(0.1,0.1,0.1,1);
-            glClear(GL_COLOR_BUFFER_BIT);
-
-            _blueShader->bind();
-            _squareVA->bind();
             
-            glDrawElements(GL_TRIANGLES, _squareVA->getIndexBuffer()->getCount(), GL_UNSIGNED_INT, nullptr);
+            RenderCommand::setClearColor({ 0.1f, 0.1f, 0.1f, 1.0f });
+            RenderCommand::clear();
+
+            Renderer::beginScene();
+            
+            _blueShader->bind();
+            Renderer::submit(_squareVA);
 
             _shader->bind();
-            _vertexArray->bind();
-            
-            glDrawElements(GL_TRIANGLES, _vertexArray->getIndexBuffer()->getCount(), GL_UNSIGNED_INT, nullptr);
+            Renderer::submit(_vertexArray);
+
+            Renderer::endScene();
+
 
             for (Layer* layer: _layerStack)
                 layer->onUpdate();

@@ -5,7 +5,8 @@
 
 namespace GraphicEngine
 {
-
+    class IndexBuffer;
+    class VertexBuffer;
     class OpenGLVertexArray : public VertexArray
     {
     public:

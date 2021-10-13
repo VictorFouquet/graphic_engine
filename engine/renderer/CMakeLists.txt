@@ -1,5 +1,7 @@
 add_library(renderer STATIC
     buffer.cpp
+    rendererAPI.cpp
+    renderCommand.cpp
     renderer.cpp
     shader.cpp
     vertexArray.cpp

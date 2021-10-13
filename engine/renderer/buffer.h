@@ -1,7 +1,6 @@
 #pragma once
 
 #include "precompiledHeaders.h"
-#include "renderer.h"
 
 namespace GraphicEngine
 {
