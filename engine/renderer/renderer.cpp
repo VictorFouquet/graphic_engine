@@ -1,4 +1,5 @@
 #include "renderer.h"
+#include "openGLShader.h"
 
 namespace GraphicEngine
 {
@@ -21,8 +22,8 @@ namespace GraphicEngine
     ) 
     {
         shader->bind();
-        shader->uploadUniformMat4("u_ViewProjection", _sceneData->viewProjectionMatrix);
-        shader->uploadUniformMat4("u_Transform", transform);
+        std::dynamic_pointer_cast<OpenGLShader>(shader)->uploadUniformMat4("u_ViewProjection", _sceneData->viewProjectionMatrix);
+        std::dynamic_pointer_cast<OpenGLShader>(shader)->uploadUniformMat4("u_Transform", transform);
 
         vertexArray->bind();
         RenderCommand::drawIndexed(vertexArray);

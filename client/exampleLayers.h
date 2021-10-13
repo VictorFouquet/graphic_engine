@@ -1,4 +1,5 @@
 #include "engine.h"
+#include "glm/gtc/type_ptr.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 
 #define BIND_EVENT_FN(x) std::bind(&ExampleLayer::x, this, std::placeholders::_1)
@@ -101,7 +102,7 @@ public:
             };
         )";
 
-        _shader.reset(new GraphicEngine::Shader(vertexSrc, fragmentSrc));
+        _shader.reset(GraphicEngine::Shader::create(vertexSrc, fragmentSrc));
 
 
 
@@ -139,7 +140,7 @@ public:
             };
         )";
 
-        _flatColorShader.reset(new GraphicEngine::Shader(flatColorShaderVertexSrc, flatColorShaderFragmentSrc));
+        _flatColorShader.reset(GraphicEngine::Shader::create(flatColorShaderVertexSrc, flatColorShaderFragmentSrc));
     }
 
     void onUpdate(GraphicEngine::Timestep timestep) override
@@ -185,8 +186,8 @@ public:
         GraphicEngine::Renderer::beginScene(_camera);
 
         glm::mat4 scale = glm::scale(glm::mat4(1.0f), glm::vec3(0.1f));
-        glm::vec4 lightBlueColor(0.1f, 0.2f, 0.7f, 1.0f);
-        glm::vec4 deepBlueColor(0.2f, 0.3f, 0.8f, 1.0f);
+
+        std::dynamic_pointer_cast<GraphicEngine::OpenGLShader>(_flatColorShader)->bind();
 
         int i = 0;
 
@@ -195,9 +196,13 @@ public:
             for (float x = -9.5; x < 10.5; x++)
             {
                 if (i & 1)
-                    _flatColorShader->uploadUniformFloat4("u_Color", lightBlueColor);
+                   std::dynamic_pointer_cast<GraphicEngine::OpenGLShader>(_flatColorShader)->uploadUniformFloat4(
+                       "u_Color", _lightBlueColor
+                    );
                 else
-                    _flatColorShader->uploadUniformFloat4("u_Color", deepBlueColor);
+                    std::dynamic_pointer_cast<GraphicEngine::OpenGLShader>(_flatColorShader)->uploadUniformFloat4(
+                        "u_Color", _deepBlueColor
+                    );
                 i++;
 
                 glm::vec3 pos(x * 0.11f, y * 0.11f, 0.0f);
@@ -211,6 +216,16 @@ public:
         GraphicEngine::Renderer::submit(_shader, _vertexArray, transform);
 
         GraphicEngine::Renderer::endScene();
+    }
+
+    void onImGuiRender()
+    {
+        ImGui::Begin("Settings");
+        
+        ImGui::ColorEdit3("Color 1", glm::value_ptr(_lightBlueColor));
+        ImGui::ColorEdit3("Color 2", glm::value_ptr(_deepBlueColor));
+
+        ImGui::End();
     }
 
     void onEvent(GraphicEngine::Event& event) override
@@ -235,4 +250,7 @@ private:
     glm::vec3 _trianglePosition;
     float _triangleMoveSpeed = 1.0f;
     glm::mat4 _squareTransform;
+
+    glm::vec4 _lightBlueColor = { 0.2f, 0.3f, 0.8f, 1.0f };
+    glm::vec4 _deepBlueColor  = { 0.1f, 0.2f, 0.7f, 1.0f };
 };

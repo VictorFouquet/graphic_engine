@@ -3,6 +3,7 @@ add_library(openGLImpl STATIC
     openGLContext.cpp
     openGLRendererAPI.cpp
     openGLVertexArray.cpp
+    openGLShader.cpp
 )
 
 find_package(GLEW REQUIRED)

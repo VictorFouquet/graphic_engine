@@ -12,6 +12,7 @@
 #include "layer.h"
 #include "layerStack.h"
 #include "imGuiLayer.h"
+#include "openGLShader.h"
 #include "shader.h"
 #include "buffer.h"
 #include "vertexArray.h"
