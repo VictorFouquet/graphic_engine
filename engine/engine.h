@@ -48,14 +48,6 @@ namespace GraphicEngine
         bool _running = true;
         LayerStack _layerStack;
         
-        std::shared_ptr<VertexArray>  _vertexArray;
-        std::shared_ptr<VertexArray>  _squareVA;
-
-        std::shared_ptr<Shader> _shader;
-        std::shared_ptr<Shader> _blueShader;
-
-        OrthographicCamera _camera;
-        
         bool onWindowClose(WindowCloseEvent& e);
         bool handleKeyPress(KeyPressedEvent& e);
         bool handleMouseButtonPressed(MouseMovedEvent& e);
