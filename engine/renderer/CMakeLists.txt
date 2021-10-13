@@ -5,6 +5,7 @@ add_library(renderer STATIC
     renderer.cpp
     shader.cpp
     vertexArray.cpp
+    camera.cpp
 )
 
 target_include_directories(renderer PUBLIC

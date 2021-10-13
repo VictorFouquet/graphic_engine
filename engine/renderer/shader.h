@@ -1,7 +1,7 @@
 #pragma once
 
 #include "precompiledHeaders.h"
-
+#include "glm/glm.hpp"
 
 namespace GraphicEngine
 {
@@ -15,6 +15,7 @@ namespace GraphicEngine
         void bind() const;
         void unbind() const;
     
+        void uploadUniformMat4(const std::string name, const glm::mat4 matrix);
     private:
         uint32_t _rendererID;
     };

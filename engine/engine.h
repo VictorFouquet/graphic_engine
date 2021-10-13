@@ -13,6 +13,7 @@
 #include "shader.h"
 #include "buffer.h"
 #include "vertexArray.h"
+#include "camera.h"
 
 #include "event.h"
 #include "applicationEvent.h"
@@ -53,6 +54,8 @@ namespace GraphicEngine
         std::shared_ptr<Shader> _shader;
         std::shared_ptr<Shader> _blueShader;
 
+        OrthographicCamera _camera;
+        
         bool onWindowClose(WindowCloseEvent& e);
         bool handleKeyPress(KeyPressedEvent& e);
         bool handleMouseButtonPressed(MouseMovedEvent& e);

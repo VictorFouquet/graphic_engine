@@ -8,6 +8,7 @@ namespace GraphicEngine
     Engine* Engine::_instance = nullptr;
 
     Engine::Engine()
+        : _camera(-2.0f, 2.0f, -1.5f, 1.5f) // Uses same ratio as window's ratio
     {
         _instance = this;
 
@@ -80,6 +81,8 @@ namespace GraphicEngine
 
             layout (location = 0) in vec3 aPos;
             layout (location = 1) in vec4 aColor;
+            
+            uniform mat4 u_ViewProjection;
 
             out vec3 vPosition;
             out vec4 vColor;
@@ -88,7 +91,7 @@ namespace GraphicEngine
             {
                 vPosition = aPos;
                 vColor = aColor;
-                gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);
+                gl_Position = u_ViewProjection * vec4(aPos.x, aPos.y, aPos.z, 1.0);
             };
         )";
 
@@ -117,13 +120,15 @@ namespace GraphicEngine
             #version 330 core
 
             layout (location = 0) in vec3 aPos;
-
+            
+            uniform mat4 u_ViewProjection;
+            
             out vec3 vPosition;
 
             void main()
             {
                 vPosition = aPos;
-                gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);
+                gl_Position = u_ViewProjection * vec4(aPos.x, aPos.y, aPos.z, 1.0);
             };
         )";
 
@@ -181,13 +186,13 @@ namespace GraphicEngine
             RenderCommand::setClearColor({ 0.1f, 0.1f, 0.1f, 1.0f });
             RenderCommand::clear();
 
-            Renderer::beginScene();
-            
-            _blueShader->bind();
-            Renderer::submit(_squareVA);
+            _camera.setPosition({ 0.5f, 0.5f, 0.0f });
+            _camera.setRotation(45.0f);
 
-            _shader->bind();
-            Renderer::submit(_vertexArray);
+            Renderer::beginScene(_camera);
+            
+            Renderer::submit(_blueShader, _squareVA);
+            Renderer::submit(_shader, _vertexArray);
 
             Renderer::endScene();
 
