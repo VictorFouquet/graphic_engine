@@ -6,7 +6,7 @@ class ExampleLayer : public GraphicEngine::Layer
 {
 public:
     ExampleLayer()
-        : GraphicEngine::Layer("Example"), _camera(-2.0f, 2.0f, -1.5f, 1.5f), _cameraPosition(0.0f)
+        : GraphicEngine::Layer("Example"), _camera(-1.6f, 1.6f, -1.2f, 1.2f), _cameraPosition(0.0f)
     {
         float vertices[3 * 7] = {
             -0.5f, -0.5f, 0.0f, 0.8f, 0.2f, 0.8f, 1.0f,
@@ -137,23 +137,25 @@ public:
         _blueShader.reset(new GraphicEngine::Shader(blueShaderVertexSrc, blueShaderFragmentSrc));
     }
 
-    void onUpdate() override
+    void onUpdate(GraphicEngine::Timestep timestep) override
     {
+        std::cout << "[CLIENT] Frame timestep (ms): " << timestep.getMilliseconds() << std::endl;
+
         // Handles key pressed event to move camera.
         if (GraphicEngine::Input::isKeyPressed(65))      // AZERTY Q - Move Left
-            _cameraPosition.x -= _cameraMoveSpeed;
+            _cameraPosition.x -= _cameraMoveSpeed * timestep;
         else if (GraphicEngine::Input::isKeyPressed(68)) // AZERTY D - Move Right
-            _cameraPosition.x += _cameraMoveSpeed;
+            _cameraPosition.x += _cameraMoveSpeed * timestep;
 
         if (GraphicEngine::Input::isKeyPressed(87))      // AZERTY Z - Move Up
-            _cameraPosition.y += _cameraMoveSpeed;
+            _cameraPosition.y += _cameraMoveSpeed * timestep;
         else if (GraphicEngine::Input::isKeyPressed(83)) // AZERTY S - Move Down
-            _cameraPosition.y -= _cameraMoveSpeed;
+            _cameraPosition.y -= _cameraMoveSpeed * timestep;
 
         if (GraphicEngine::Input::isKeyPressed(69))      // AZERTY A - AntiCW Rotation
-            _cameraRotation += _cameraRotationSpeed;
+            _cameraRotation += _cameraRotationSpeed * timestep;
         else if (GraphicEngine::Input::isKeyPressed(81)) // AZERTY E - CW Rotation
-            _cameraRotation -= _cameraRotationSpeed;
+            _cameraRotation -= _cameraRotationSpeed * timestep;
 
         GraphicEngine::RenderCommand::setClearColor({ 0.1f, 0.1f, 0.1f, 1.0f });
         GraphicEngine::RenderCommand::clear();
@@ -184,8 +186,8 @@ private:
     GraphicEngine::OrthographicCamera _camera;
 
     glm::vec3 _cameraPosition;
-    float _cameraMoveSpeed = 0.1f;
+    float _cameraMoveSpeed = 2.0f;
 
     float _cameraRotation = 0.0f;
-    float _cameraRotationSpeed = 1.0f;
+    float _cameraRotationSpeed = 180.0f;
 };

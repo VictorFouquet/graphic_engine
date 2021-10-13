@@ -8,6 +8,7 @@ add_library(engine STATIC
 
 find_package(GLEW REQUIRED)
 find_package(OpenGL REQUIRED)
+add_subdirectory(core)
 add_subdirectory(renderer)
 add_subdirectory(openGLImpl)
 add_subdirectory(imGuiImpl)
@@ -24,6 +25,7 @@ target_include_directories(engine PUBLIC
 target_link_libraries(engine
     ${GLEW_LIBRARIES}
     ${OPENGL_LIBRARIES}
+    engine_core
     events
     precompiledHeaders
     glfw

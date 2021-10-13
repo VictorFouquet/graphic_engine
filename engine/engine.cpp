@@ -1,5 +1,6 @@
 #include "engine.h"
 #include "imGuiLayer.h"
+#include "GLFW/glfw3.h"
 
 namespace GraphicEngine
 {
@@ -52,8 +53,12 @@ namespace GraphicEngine
     {
         while(_running)
         {
+            float time = (float)glfwGetTime();
+            Timestep timestep = time - _lastFrameTime;
+            _lastFrameTime = time;
+
             for (Layer* layer: _layerStack)
-                layer->onUpdate();
+                layer->onUpdate(timestep);
 
             imGuiLayer->begin();
             for (Layer* layer: _layerStack)

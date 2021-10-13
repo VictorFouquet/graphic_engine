@@ -3,6 +3,7 @@
 #include <GLFW/glfw3.h>
 
 #include "precompiledHeaders.h"
+#include "timestep.h"
 #include "event.h"
 
 namespace GraphicEngine
@@ -15,7 +16,7 @@ namespace GraphicEngine
 
         virtual void onAttach() {};
         virtual void onDetach() {};
-        virtual void onUpdate() {};
+        virtual void onUpdate(Timestep timestep) {};
         virtual void onImGuiRender() {};
         virtual void onEvent(Event& e) {};
 

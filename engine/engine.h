@@ -5,6 +5,8 @@
 #include "glm/glm.hpp"
 #include "logic.h"
 
+#include "timestep.h"
+
 #include "renderer.h"
 #include "window.h"
 #include "layer.h"
@@ -47,6 +49,7 @@ namespace GraphicEngine
 
         bool _running = true;
         LayerStack _layerStack;
+        float _lastFrameTime = 0.0f;
         
         bool onWindowClose(WindowCloseEvent& e);
         bool handleKeyPress(KeyPressedEvent& e);
