@@ -1,4 +1,5 @@
 #include "engine.h"
+#include "glm/gtc/matrix_transform.hpp"
 
 #define BIND_EVENT_FN(x) std::bind(&ExampleLayer::x, this, std::placeholders::_1)
 
@@ -6,7 +7,7 @@ class ExampleLayer : public GraphicEngine::Layer
 {
 public:
     ExampleLayer()
-        : GraphicEngine::Layer("Example"), _camera(-1.6f, 1.6f, -1.2f, 1.2f), _cameraPosition(0.0f)
+        : GraphicEngine::Layer("Example"), _camera(-1.6f, 1.6f, -1.2f, 1.2f), _cameraPosition(0.0f), _trianglePosition(0.0f)
     {
         float vertices[3 * 7] = {
             -0.5f, -0.5f, 0.0f, 0.8f, 0.2f, 0.8f, 1.0f,
@@ -43,10 +44,10 @@ public:
         _squareVA.reset(GraphicEngine::VertexArray::create());
 
         float squareVertices[3 * 4] = {
-            -0.75f, -0.75f, 0.0f,
-             0.75f, -0.75f, 0.0f,
-             0.75f,  0.75f, 0.0f,
-            -0.75f,  0.75f, 0.0f
+            -0.5f, -0.5f, 0.0f,
+             0.5f, -0.5f, 0.0f,
+             0.5f,  0.5f, 0.0f,
+            -0.5f,  0.5f, 0.0f
         };
 
         uint32_t squareIndices[6] = { 0, 1, 2, 2, 3, 0 };
@@ -72,6 +73,7 @@ public:
             layout (location = 1) in vec4 aColor;
             
             uniform mat4 u_ViewProjection;
+            uniform mat4 u_Transform;
 
             out vec3 vPosition;
             out vec4 vColor;
@@ -80,7 +82,7 @@ public:
             {
                 vPosition = aPos;
                 vColor = aColor;
-                gl_Position = u_ViewProjection * vec4(aPos.x, aPos.y, aPos.z, 1.0);
+                gl_Position = u_ViewProjection * u_Transform * vec4(aPos.x, aPos.y, aPos.z, 1.0);
             };
         )";
 
@@ -111,13 +113,14 @@ public:
             layout (location = 0) in vec3 aPos;
             
             uniform mat4 u_ViewProjection;
-            
+            uniform mat4 u_Transform;
+
             out vec3 vPosition;
 
             void main()
             {
                 vPosition = aPos;
-                gl_Position = u_ViewProjection * vec4(aPos.x, aPos.y, aPos.z, 1.0);
+                gl_Position = u_ViewProjection * u_Transform * vec4(aPos.x, aPos.y, aPos.z, 1.0);
             };
         )";
 
@@ -157,23 +160,48 @@ public:
         else if (GraphicEngine::Input::isKeyPressed(81)) // AZERTY E - CW Rotation
             _cameraRotation -= _cameraRotationSpeed * timestep;
 
+        // Handles key pressed event to move triangle object
+        if (GraphicEngine::Input::isKeyPressed(74))      // AZERTY J - Move Left
+            _trianglePosition.x -= _triangleMoveSpeed * timestep;
+        else if (GraphicEngine::Input::isKeyPressed(76)) // AZERTY D - Move Right
+            _trianglePosition.x += _triangleMoveSpeed * timestep;
+
+
+        if (GraphicEngine::Input::isKeyPressed(73))      // AZERTY I - Move Up
+            _trianglePosition.y += _triangleMoveSpeed * timestep;
+        else if (GraphicEngine::Input::isKeyPressed(75)) // AZERTY K - Move Down
+            _trianglePosition.y -= _triangleMoveSpeed * timestep;
+
+
         GraphicEngine::RenderCommand::setClearColor({ 0.1f, 0.1f, 0.1f, 1.0f });
         GraphicEngine::RenderCommand::clear();
 
         _camera.setPosition(_cameraPosition);
         _camera.setRotation(_cameraRotation);
 
+
         GraphicEngine::Renderer::beginScene(_camera);
+
+        glm::mat4 scale = glm::scale(glm::mat4(1.0f), glm::vec3(0.1f));
         
-        GraphicEngine::Renderer::submit(_blueShader, _squareVA);
-        GraphicEngine::Renderer::submit(_shader, _vertexArray);
+        for (float y = -9.5; y < 10.5; y++)
+        {
+            for (float x = -9.5; x < 10.5; x++)
+            {
+                glm::vec3 pos(x * 0.11f, y * 0.11f, 0.0f);
+                glm::mat4 transform = glm::translate(glm::mat4(1.0f), pos) * scale;
+                GraphicEngine::Renderer::submit(_blueShader, _squareVA, transform);
+            }
+        }
+
+        glm::mat4 transform = glm::translate(glm::mat4(1.0f), _trianglePosition);
+        GraphicEngine::Renderer::submit(_shader, _vertexArray, transform);
 
         GraphicEngine::Renderer::endScene();
     }
 
     void onEvent(GraphicEngine::Event& event) override
     {
-
     }
 
 private:
@@ -190,4 +218,8 @@ private:
 
     float _cameraRotation = 0.0f;
     float _cameraRotationSpeed = 180.0f;
+
+    glm::vec3 _trianglePosition;
+    float _triangleMoveSpeed = 1.0f;
+    glm::mat4 _squareTransform;
 };
