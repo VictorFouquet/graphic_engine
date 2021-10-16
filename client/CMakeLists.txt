@@ -3,7 +3,7 @@ add_library(client STATIC
 )
 
 set(FILES_TO_COPY
-    ${CMAKE_CURRENT_SOURCE_DIR}/assets/checkboard.png
+    ${CMAKE_CURRENT_SOURCE_DIR}/assets/logo.png
 )
 
 file(COPY ${FILES_TO_COPY}

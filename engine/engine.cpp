@@ -16,6 +16,8 @@ namespace GraphicEngine
         window = Window::create();
         window->setEventCallback(BIND_EVENT_FN(onEvent));
 
+        Renderer::init();
+
         imGuiLayer = new ImGuiLayer();
         pushOverlay(imGuiLayer);
     }

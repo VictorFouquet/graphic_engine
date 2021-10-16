@@ -3,6 +3,11 @@
 
 namespace GraphicEngine
 {
+    void Renderer::init() 
+    {
+        RenderCommand::init();
+    }
+
     Renderer::SceneData* Renderer::_sceneData = new Renderer::SceneData;
 
     void Renderer::beginScene(OrthographicCamera& camera) 

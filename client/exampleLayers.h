@@ -188,7 +188,7 @@ public:
         )";
 
         _textureShader.reset(GraphicEngine::Shader::create(textureShaderVertexSrc, textureShaderFragmentSrc));
-        _checkboxTexture = GraphicEngine::Texture2D::create("client/checkboard.png");
+        _checkboxTexture = GraphicEngine::Texture2D::create("client/logo.png");
 
         std::dynamic_pointer_cast<GraphicEngine::OpenGLShader>(_textureShader)->bind();
         std::dynamic_pointer_cast<GraphicEngine::OpenGLShader>(_textureShader)->uploadUniformInt("u_Texture", 0);
@@ -265,7 +265,10 @@ public:
 
         // Draw textured square
         _checkboxTexture->bind(0);
-        GraphicEngine::Renderer::submit(_textureShader, _squareVA, glm::scale(glm::mat4(1.0f), glm::vec3(1.5f)));
+        GraphicEngine::Renderer::submit(
+            _textureShader, _squareVA,
+            glm::translate(glm::mat4(1.0f), glm::vec3(1.35f, -1.0f, 0.0f)) * glm::scale(glm::mat4(1.0f), glm::vec3(0.3f))
+        );
 
         // Draw triangle
         glm::mat4 transform = glm::translate(glm::mat4(1.0f), _trianglePosition);

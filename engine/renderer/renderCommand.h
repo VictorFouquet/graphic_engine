@@ -12,6 +12,11 @@ namespace GraphicEngine
     class RenderCommand
     {
     public:
+        inline static void init()
+        {
+            _rendererAPI->init();
+        }
+
         inline static void clear()
         {
             _rendererAPI->clear();
