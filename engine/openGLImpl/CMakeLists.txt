@@ -4,6 +4,7 @@ add_library(openGLImpl STATIC
     openGLRendererAPI.cpp
     openGLVertexArray.cpp
     openGLShader.cpp
+    openGLTexture.cpp
 )
 
 find_package(GLEW REQUIRED)
@@ -22,6 +23,7 @@ target_link_libraries(openGLImpl
     ${GLEW_LIBRARIES}
     glm
     glfw
+    stb
     engine
     renderer
 )

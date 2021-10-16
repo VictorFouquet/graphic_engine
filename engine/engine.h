@@ -14,6 +14,7 @@
 #include "imGuiLayer.h"
 #include "openGLShader.h"
 #include "shader.h"
+#include "texture.h"
 #include "buffer.h"
 #include "vertexArray.h"
 #include "camera.h"

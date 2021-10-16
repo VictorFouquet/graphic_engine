@@ -6,11 +6,12 @@
 #include "vertexArray.h"
 #include "camera.h"
 #include "shader.h"
+#include "texture.h"
 
 namespace GraphicEngine
 {
     class VertexArray;
-
+    
     class Renderer
     {
     public:

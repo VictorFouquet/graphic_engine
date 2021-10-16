@@ -45,11 +45,18 @@ public:
 
         _squareVA.reset(GraphicEngine::VertexArray::create());
 
-        float squareVertices[3 * 4] = {
-            -0.5f, -0.5f, 0.0f,
-             0.5f, -0.5f, 0.0f,
-             0.5f,  0.5f, 0.0f,
-            -0.5f,  0.5f, 0.0f
+        float squareVertices[4 * 5] = {
+            -0.5f, -0.5f, 0.0f, // Vertex coordinates 
+                    0.0f, 0.0f, // Texture coordinates
+
+             0.5f, -0.5f, 0.0f, // Vertex coordinates 
+                    1.0f, 0.0f, // Texture coordinates
+
+             0.5f,  0.5f, 0.0f, // Vertex coordinates 
+                    1.0f, 1.0f, // Texture coordinates
+
+            -0.5f,  0.5f, 0.0f, // Vertex coordinates 
+                    0.0f, 1.0f, // Texture coordinates
         };
 
         uint32_t squareIndices[6] = { 0, 1, 2, 2, 3, 0 };
@@ -58,7 +65,8 @@ public:
         squareVB.reset(GraphicEngine::VertexBuffer::create(squareVertices, sizeof(squareVertices)));
 
         squareVB->setLayout({
-            { GraphicEngine::ShaderDataType::Float3, "aPos" }
+            { GraphicEngine::ShaderDataType::Float3, "aPos" },
+            { GraphicEngine::ShaderDataType::Float2, "aTexCoord" }
         });
 
         _squareVA->addVertexBuffer(squareVB);
@@ -142,11 +150,52 @@ public:
         )";
 
         _flatColorShader.reset(GraphicEngine::Shader::create(flatColorShaderVertexSrc, flatColorShaderFragmentSrc));
+
+
+
+
+        std::string textureShaderVertexSrc = R"(
+            #version 330 core
+
+            layout (location = 0) in vec3 aPos;
+            layout (location = 1) in vec2 aTexCoord;
+
+            uniform mat4 u_ViewProjection;
+            uniform mat4 u_Transform;
+
+            out vec2 v_TexCoord;
+
+            void main()
+            {
+                v_TexCoord = aTexCoord;
+                gl_Position = u_ViewProjection * u_Transform * vec4(aPos.x, aPos.y, aPos.z, 1.0);
+            };
+        )";
+
+        std::string textureShaderFragmentSrc = R"(
+            #version 330 core
+
+            layout(location=0) out vec4 color;
+
+            in vec2 v_TexCoord;
+
+            uniform sampler2D u_Texture;
+
+            void main()
+            {
+                color = texture(u_Texture, v_TexCoord);
+            };
+        )";
+
+        _textureShader.reset(GraphicEngine::Shader::create(textureShaderVertexSrc, textureShaderFragmentSrc));
+        _checkboxTexture = GraphicEngine::Texture2D::create("client/checkboard.png");
+
+        std::dynamic_pointer_cast<GraphicEngine::OpenGLShader>(_textureShader)->bind();
+        std::dynamic_pointer_cast<GraphicEngine::OpenGLShader>(_textureShader)->uploadUniformInt("u_Texture", 0);
     }
 
     void onUpdate(GraphicEngine::Timestep timestep) override
     {
-        std::cout << "[CLIENT] Frame timestep (ms): " << timestep.getMilliseconds() << std::endl;
         _timestep = timestep;
 
         // Handles key pressed event to move camera.
@@ -198,7 +247,7 @@ public:
             for (float x = -9.5; x < 10.5; x++)
             {
                 if (i & 1)
-                   std::dynamic_pointer_cast<GraphicEngine::OpenGLShader>(_flatColorShader)->uploadUniformFloat4(
+                    std::dynamic_pointer_cast<GraphicEngine::OpenGLShader>(_flatColorShader)->uploadUniformFloat4(
                        "u_Color", _lightBlueColor
                     );
                 else
@@ -214,6 +263,11 @@ public:
             i++;
         }
 
+        // Draw textured square
+        _checkboxTexture->bind(0);
+        GraphicEngine::Renderer::submit(_textureShader, _squareVA, glm::scale(glm::mat4(1.0f), glm::vec3(1.5f)));
+
+        // Draw triangle
         glm::mat4 transform = glm::translate(glm::mat4(1.0f), _trianglePosition);
         GraphicEngine::Renderer::submit(_shader, _vertexArray, transform);
 
@@ -243,8 +297,11 @@ private:
     GraphicEngine::Ref<GraphicEngine::VertexArray>  _vertexArray;
     GraphicEngine::Ref<GraphicEngine::VertexArray>  _squareVA;
 
+    GraphicEngine::Ref<GraphicEngine::Texture2D> _checkboxTexture;
+
     GraphicEngine::Ref<GraphicEngine::Shader> _shader;
     GraphicEngine::Ref<GraphicEngine::Shader> _flatColorShader;
+    GraphicEngine::Ref<GraphicEngine::Shader> _textureShader;
 
     GraphicEngine::OrthographicCamera _camera;
 

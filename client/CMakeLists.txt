@@ -2,6 +2,14 @@ add_library(client STATIC
     client.cpp
 )
 
+set(FILES_TO_COPY
+    ${CMAKE_CURRENT_SOURCE_DIR}/assets/checkboard.png
+)
+
+file(COPY ${FILES_TO_COPY}
+    DESTINATION ${CMAKE_CURRENT_BINARY_DIR}
+)
+
 target_include_directories(engine PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}
 )

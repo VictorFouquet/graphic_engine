@@ -4,6 +4,7 @@ add_library(renderer STATIC
     renderCommand.cpp
     renderer.cpp
     shader.cpp
+    texture.cpp
     vertexArray.cpp
     camera.cpp
 )
@@ -15,5 +16,6 @@ target_include_directories(renderer PUBLIC
 
 target_link_libraries(renderer
     precompiledHeaders
+    engine_core
     openGLImpl
 )
