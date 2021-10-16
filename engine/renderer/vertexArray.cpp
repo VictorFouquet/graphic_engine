@@ -31,12 +31,12 @@ namespace GraphicEngine
         
     }
     
-    void VertexArray::addVertexBuffer(const std::shared_ptr<VertexBuffer>& vertexBuffer)
+    void VertexArray::addVertexBuffer(const Ref<VertexBuffer>& vertexBuffer)
     {
         
     }
     
-    void VertexArray::setIndexBuffer(const  std::shared_ptr<IndexBuffer>&  indexBuffer)
+    void VertexArray::setIndexBuffer(const  Ref<IndexBuffer>&  indexBuffer)
     {
         
     }

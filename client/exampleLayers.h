@@ -1,6 +1,7 @@
 #include "engine.h"
 #include "glm/gtc/type_ptr.hpp"
 #include "glm/gtc/matrix_transform.hpp"
+#include "core.h"
 
 #define BIND_EVENT_FN(x) std::bind(&ExampleLayer::x, this, std::placeholders::_1)
 
@@ -26,14 +27,14 @@ public:
 
         _vertexArray.reset(GraphicEngine::VertexArray::create());
 
-        std::shared_ptr<GraphicEngine::VertexBuffer> vertexBuffer;
+        GraphicEngine::Ref<GraphicEngine::VertexBuffer> vertexBuffer;
         vertexBuffer.reset(GraphicEngine::VertexBuffer::create(vertices, sizeof(vertices)));
         vertexBuffer->bind();
         vertexBuffer->setLayout(layout);
 
         _vertexArray->addVertexBuffer(vertexBuffer);
 
-        std::shared_ptr<GraphicEngine::IndexBuffer> indexBuffer;
+        GraphicEngine::Ref<GraphicEngine::IndexBuffer> indexBuffer;
         indexBuffer.reset(GraphicEngine::IndexBuffer::create(indices, sizeof(indices) / sizeof(uint32_t)));
         indexBuffer->bind();
 
@@ -53,7 +54,7 @@ public:
 
         uint32_t squareIndices[6] = { 0, 1, 2, 2, 3, 0 };
 
-        std::shared_ptr<GraphicEngine::VertexBuffer> squareVB;
+        GraphicEngine::Ref<GraphicEngine::VertexBuffer> squareVB;
         squareVB.reset(GraphicEngine::VertexBuffer::create(squareVertices, sizeof(squareVertices)));
 
         squareVB->setLayout({
@@ -62,7 +63,7 @@ public:
 
         _squareVA->addVertexBuffer(squareVB);
 
-        std::shared_ptr<GraphicEngine::IndexBuffer> squareIB; 
+        GraphicEngine::Ref<GraphicEngine::IndexBuffer> squareIB; 
         squareIB.reset(GraphicEngine::IndexBuffer::create(squareIndices, sizeof(squareIndices) / sizeof(uint32_t)));
 
         _squareVA->setIndexBuffer(squareIB);
@@ -146,6 +147,7 @@ public:
     void onUpdate(GraphicEngine::Timestep timestep) override
     {
         std::cout << "[CLIENT] Frame timestep (ms): " << timestep.getMilliseconds() << std::endl;
+        _timestep = timestep;
 
         // Handles key pressed event to move camera.
         if (GraphicEngine::Input::isKeyPressed(65))      // AZERTY Q - Move Left
@@ -159,9 +161,9 @@ public:
             _cameraPosition.y -= _cameraMoveSpeed * timestep;
 
         if (GraphicEngine::Input::isKeyPressed(69))      // AZERTY A - AntiCW Rotation
-            _cameraRotation += _cameraRotationSpeed * timestep;
-        else if (GraphicEngine::Input::isKeyPressed(81)) // AZERTY E - CW Rotation
             _cameraRotation -= _cameraRotationSpeed * timestep;
+        else if (GraphicEngine::Input::isKeyPressed(81)) // AZERTY E - CW Rotation
+            _cameraRotation += _cameraRotationSpeed * timestep;
 
         // Handles key pressed event to move triangle object
         if (GraphicEngine::Input::isKeyPressed(74))      // AZERTY J - Move Left
@@ -224,6 +226,11 @@ public:
         
         ImGui::ColorEdit3("Color 1", glm::value_ptr(_lightBlueColor));
         ImGui::ColorEdit3("Color 2", glm::value_ptr(_deepBlueColor));
+        
+        ImGui::Text("Stats");
+
+        ImGui::Text("Delta Time: %f ms", _timestep * 1000);
+        ImGui::Text("Refresh: %f FPS", 1 / _timestep);
 
         ImGui::End();
     }
@@ -233,13 +240,15 @@ public:
     }
 
 private:
-    std::shared_ptr<GraphicEngine::VertexArray>  _vertexArray;
-    std::shared_ptr<GraphicEngine::VertexArray>  _squareVA;
+    GraphicEngine::Ref<GraphicEngine::VertexArray>  _vertexArray;
+    GraphicEngine::Ref<GraphicEngine::VertexArray>  _squareVA;
 
-    std::shared_ptr<GraphicEngine::Shader> _shader;
-    std::shared_ptr<GraphicEngine::Shader> _flatColorShader;
+    GraphicEngine::Ref<GraphicEngine::Shader> _shader;
+    GraphicEngine::Ref<GraphicEngine::Shader> _flatColorShader;
 
     GraphicEngine::OrthographicCamera _camera;
+
+    float _timestep;
 
     glm::vec3 _cameraPosition;
     float _cameraMoveSpeed = 2.0f;

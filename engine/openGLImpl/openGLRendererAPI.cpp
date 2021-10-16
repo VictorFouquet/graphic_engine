@@ -1,4 +1,5 @@
 #include "openGLRendererAPI.h"
+#include "core.h"
 
 namespace GraphicEngine
 {
@@ -14,7 +15,7 @@ namespace GraphicEngine
         
     }
     
-    void OpenGLRendererAPI::drawIndexed(const std::shared_ptr<VertexArray>& vertexArray) 
+    void OpenGLRendererAPI::drawIndexed(const Ref<VertexArray>& vertexArray) 
     {
         glDrawElements(GL_TRIANGLES, vertexArray->getIndexBuffer()->getCount(), GL_UNSIGNED_INT, nullptr);
     }

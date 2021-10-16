@@ -1,5 +1,5 @@
+#include "core.h"
 #include "openGLVertexArray.h"
-
 
 namespace GraphicEngine
 {
@@ -44,7 +44,7 @@ namespace GraphicEngine
         glBindVertexArray(0);
     }
     
-    void OpenGLVertexArray::addVertexBuffer(const std::shared_ptr<VertexBuffer>& vertexBuffer) 
+    void OpenGLVertexArray::addVertexBuffer(const Ref<VertexBuffer>& vertexBuffer) 
     {
         if (!vertexBuffer->getLayout().getElements().size())
         {
@@ -76,7 +76,7 @@ namespace GraphicEngine
         _vertexBuffers.push_back(vertexBuffer);
     }
     
-    void OpenGLVertexArray::setIndexBuffer(const  std::shared_ptr<IndexBuffer>&  indexBuffer) 
+    void OpenGLVertexArray::setIndexBuffer(const  Ref<IndexBuffer>&  indexBuffer) 
     {        
         glBindVertexArray(_rendererID);
         indexBuffer->bind();

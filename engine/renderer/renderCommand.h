@@ -2,6 +2,7 @@
 
 #include "glm/glm.hpp"
 #include "rendererAPI.h"
+#include "core.h"
 
 namespace GraphicEngine
 {
@@ -21,7 +22,7 @@ namespace GraphicEngine
             _rendererAPI->setClearColor(color);
         }
         
-        inline static void drawIndexed(const std::shared_ptr<VertexArray>& VertexArray)
+        inline static void drawIndexed(const Ref<VertexArray>& VertexArray)
         {
             _rendererAPI->drawIndexed(VertexArray);
         }
