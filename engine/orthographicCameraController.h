@@ -17,6 +17,9 @@ namespace GraphicEngine
         void onUpdate(Timestep timestep);
         void onEvent(Event& event);
 
+        inline void setZoomLevel(float level) { _zoomLevel = level; }
+        inline float getZoomLevel() { return _zoomLevel; }
+
         inline OrthographicCamera& getCamera() { return _camera; }
 
     private:

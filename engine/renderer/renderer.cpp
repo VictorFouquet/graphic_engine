@@ -3,13 +3,18 @@
 
 namespace GraphicEngine
 {
+    Renderer::SceneData* Renderer::_sceneData = new Renderer::SceneData;
+
     void Renderer::init() 
     {
         RenderCommand::init();
     }
 
-    Renderer::SceneData* Renderer::_sceneData = new Renderer::SceneData;
-
+    void Renderer::onWindowResize(uint32_t width, uint32_t height)
+    {
+        RenderCommand::setViewPort(0, 0, width, height);
+    }
+    
     void Renderer::beginScene(OrthographicCamera& camera) 
     {
         _sceneData->viewProjectionMatrix = camera.getViewProjectionMatrix();

@@ -41,6 +41,7 @@ namespace GraphicEngine
         EventDispatcher dispatcher(e);
 
         dispatcher.dispatch<WindowCloseEvent>(BIND_EVENT_FN(Engine::onWindowClose));
+        dispatcher.dispatch<WindowResizeEvent>(BIND_EVENT_FN(Engine::onWindowResize));
 
         for (auto it = _layerStack.end(); it != _layerStack.begin();)
         {
@@ -58,15 +59,16 @@ namespace GraphicEngine
             Timestep timestep = time - _lastFrameTime;
             _lastFrameTime = time;
 
-            for (Layer* layer: _layerStack)
-                layer->onUpdate(timestep);
+            if (!_minimized)
+            {
+                for (Layer* layer: _layerStack)
+                    layer->onUpdate(timestep);
+            }
 
             imGuiLayer->begin();
             for (Layer* layer: _layerStack)
                 layer->onImGuiRender();
             imGuiLayer->end();
-
-            // std::cout << "[INPUT] MousePos: (" << Input::getMouseX() << ", " << Input::getMouseY() << ")\n";
 
             window->onUpdate();
         }
@@ -79,12 +81,19 @@ namespace GraphicEngine
         return _running;
     }
 
-    bool Engine::handleMouseButtonPressed(MouseMovedEvent& e)
+    bool Engine::onWindowResize(WindowResizeEvent& e)
     {
-        int x = e.getX();
-        int y = e.getY();
-        add(x, y);
+        if (e.getWidth() == 0 || e.getHeight() == 0)
+        {
+            _minimized = true;
+            return false;
+        }
 
-        return true;
+        _minimized = false;
+
+        Renderer::onWindowResize(e.getWidth(), e.getHeight());
+        
+        return false;
     }
+
 } // namespace GraphicEngine

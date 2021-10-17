@@ -3,7 +3,6 @@
 #include "precompiledHeaders.h"
 
 #include "glm/glm.hpp"
-#include "logic.h"
 
 #include "timestep.h"
 
@@ -51,11 +50,13 @@ namespace GraphicEngine
         static Engine* _instance;
 
         bool _running = true;
+        bool _minimized = false;
+
         LayerStack _layerStack;
+        
         float _lastFrameTime = 0.0f;
         
         bool onWindowClose(WindowCloseEvent& e);
-        bool handleKeyPress(KeyPressedEvent& e);
-        bool handleMouseButtonPressed(MouseMovedEvent& e);
+        bool onWindowResize(WindowResizeEvent& e);
     };
 }

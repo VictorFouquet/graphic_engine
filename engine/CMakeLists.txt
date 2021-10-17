@@ -31,7 +31,6 @@ target_link_libraries(engine
     precompiledHeaders
     glfw
     glm
-    logic
     openGLImpl
     imGuiImpl
     renderer
