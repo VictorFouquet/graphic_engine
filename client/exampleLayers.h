@@ -76,17 +76,14 @@ public:
 
         _squareVA->setIndexBuffer(squareIB);
 
-        _shader.reset(GraphicEngine::Shader::create("client/assets/gradient.glsl"));
-        _flatColorShader.reset(GraphicEngine::Shader::create("client/assets/flatColor.glsl"));
-        _textureShader.reset(GraphicEngine::Shader::create("client/assets/texture.glsl"));
+        auto gradientShader = _shaderLibrary.load("client/assets/gradient.glsl");
+        auto flatColorShader = _shaderLibrary.load("client/assets/flatColor.glsl");
+        auto textureShader = _shaderLibrary.load("client/assets/texture.glsl");
 
         _checkboxTexture = GraphicEngine::Texture2D::create("client/assets/logo.png");
 
-        std::dynamic_pointer_cast<GraphicEngine::OpenGLShader>(_textureShader)->bind();
-        std::dynamic_pointer_cast<GraphicEngine::OpenGLShader>(_textureShader)->uploadUniformInt("u_Texture", 0);
-
-        std::dynamic_pointer_cast<GraphicEngine::OpenGLShader>(_textureShader)->bind();
-        std::dynamic_pointer_cast<GraphicEngine::OpenGLShader>(_textureShader)->uploadUniformInt("u_Texture", 0);
+        std::dynamic_pointer_cast<GraphicEngine::OpenGLShader>(textureShader)->bind();
+        std::dynamic_pointer_cast<GraphicEngine::OpenGLShader>(textureShader)->uploadUniformInt("u_Texture", 0);
     }
 
     void onUpdate(GraphicEngine::Timestep timestep) override
@@ -133,7 +130,8 @@ public:
 
         glm::mat4 scale = glm::scale(glm::mat4(1.0f), glm::vec3(0.1f));
 
-        std::dynamic_pointer_cast<GraphicEngine::OpenGLShader>(_flatColorShader)->bind();
+        auto flatColorShader = _shaderLibrary.get("flatColor");
+        std::dynamic_pointer_cast<GraphicEngine::OpenGLShader>(flatColorShader)->bind();
 
         int i = 0;
 
@@ -142,32 +140,34 @@ public:
             for (float x = -9.5; x < 10.5; x++)
             {
                 if (i & 1)
-                    std::dynamic_pointer_cast<GraphicEngine::OpenGLShader>(_flatColorShader)->uploadUniformFloat4(
+                    std::dynamic_pointer_cast<GraphicEngine::OpenGLShader>(flatColorShader)->uploadUniformFloat4(
                        "u_Color", _lightBlueColor
                     );
                 else
-                    std::dynamic_pointer_cast<GraphicEngine::OpenGLShader>(_flatColorShader)->uploadUniformFloat4(
+                    std::dynamic_pointer_cast<GraphicEngine::OpenGLShader>(flatColorShader)->uploadUniformFloat4(
                         "u_Color", _deepBlueColor
                     );
                 i++;
 
                 glm::vec3 pos(x * 0.11f, y * 0.11f, 0.0f);
                 glm::mat4 transform = glm::translate(glm::mat4(1.0f), pos) * scale;
-                GraphicEngine::Renderer::submit(_flatColorShader, _squareVA, transform);
+                GraphicEngine::Renderer::submit(flatColorShader, _squareVA, transform);
             }
             i++;
         }
 
         // Draw textured square
+        auto textureShader = _shaderLibrary.get("texture");
         _checkboxTexture->bind(0);
         GraphicEngine::Renderer::submit(
-            _textureShader, _squareVA,
+            textureShader, _squareVA,
             glm::translate(glm::mat4(1.0f), glm::vec3(1.35f, -1.0f, 0.0f)) * glm::scale(glm::mat4(1.0f), glm::vec3(0.3f))
         );
 
         // Draw triangle
+        auto gradientShader = _shaderLibrary.get("gradient");
         glm::mat4 transform = glm::translate(glm::mat4(1.0f), _trianglePosition);
-        GraphicEngine::Renderer::submit(_shader, _vertexArray, transform);
+        GraphicEngine::Renderer::submit(gradientShader, _vertexArray, transform);
 
         GraphicEngine::Renderer::endScene();
     }
@@ -192,14 +192,12 @@ public:
     }
 
 private:
+    GraphicEngine::ShaderLibrary _shaderLibrary;
+
     GraphicEngine::Ref<GraphicEngine::VertexArray>  _vertexArray;
     GraphicEngine::Ref<GraphicEngine::VertexArray>  _squareVA;
 
     GraphicEngine::Ref<GraphicEngine::Texture2D> _checkboxTexture;
-
-    GraphicEngine::Ref<GraphicEngine::Shader> _shader;
-    GraphicEngine::Ref<GraphicEngine::Shader> _flatColorShader;
-    GraphicEngine::Ref<GraphicEngine::Shader> _textureShader;
 
     GraphicEngine::OrthographicCamera _camera;
 

@@ -6,7 +6,8 @@
 
 namespace GraphicEngine
 {
-    OpenGLShader::OpenGLShader(const std::string& vertexSrc, const std::string& fragmentSrc)
+    OpenGLShader::OpenGLShader(const std::string& name, const std::string& vertexSrc, const std::string& fragmentSrc)
+        : _name(name)
     {
         unsigned int vertexShader = compileShader(vertexSrc.c_str(), 0);
         unsigned int fragmentShader = compileShader(fragmentSrc.c_str(), 1);
@@ -15,6 +16,14 @@ namespace GraphicEngine
     
     OpenGLShader::OpenGLShader(const std::string& filepath) 
     {
+        // Extracts file name: path/to/texture.shader.glsl -> texture.shader
+        auto lastSlash = filepath.find_last_of("/\\");
+        lastSlash = lastSlash == std::string::npos ? 0 : lastSlash + 1;
+        auto lastDot = filepath.rfind('.');
+        auto count = lastDot == std::string::npos ? filepath.size() - lastSlash : lastDot - lastSlash;
+
+        _name = filepath.substr(lastSlash, count);
+
         std::ifstream inFile;
         inFile.open(filepath); //open the input file
 

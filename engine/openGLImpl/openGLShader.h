@@ -10,12 +10,14 @@ namespace GraphicEngine
     class OpenGLShader : public Shader
     {
     public:
-        OpenGLShader(const std::string& vertexSrc, const std::string& fragmentSrc);
+        OpenGLShader(const std::string& name, const std::string& vertexSrc, const std::string& fragmentSrc);
         OpenGLShader(const std::string& filepath);
         virtual ~OpenGLShader();
 
         virtual void bind() const override;
         virtual void unbind() const override;
+
+        virtual const std::string& getName() const override { return _name; };
 
         void uploadUniformInt(const std::string name, int value);
 
@@ -31,6 +33,7 @@ namespace GraphicEngine
         void linkShaderProgram(unsigned int vs, unsigned int fs);
 
         uint32_t _rendererID;
+        std::string _name;
     };
 
 }
