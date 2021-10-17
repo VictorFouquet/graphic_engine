@@ -3,13 +3,12 @@
 #include "glm/gtc/matrix_transform.hpp"
 #include "core.h"
 
-#define BIND_EVENT_FN(x) std::bind(&ExampleLayer::x, this, std::placeholders::_1)
 
 class ExampleLayer : public GraphicEngine::Layer
 {
 public:
     ExampleLayer()
-        : GraphicEngine::Layer("Example"), _camera(-1.6f, 1.6f, -1.2f, 1.2f), _cameraPosition(0.0f), _trianglePosition(0.0f)
+        : GraphicEngine::Layer("Example"), _cameraController(1280.0f / 720.0f, true), _trianglePosition(0.0f)
     {
         float vertices[3 * 7] = {
             -0.5f, -0.5f, 0.0f, 0.8f, 0.2f, 0.8f, 1.0f,
@@ -89,22 +88,7 @@ public:
     void onUpdate(GraphicEngine::Timestep timestep) override
     {
         _timestep = timestep;
-
-        // Handles key pressed event to move camera.
-        if (GraphicEngine::Input::isKeyPressed(65))      // AZERTY Q - Move Left
-            _cameraPosition.x -= _cameraMoveSpeed * timestep;
-        else if (GraphicEngine::Input::isKeyPressed(68)) // AZERTY D - Move Right
-            _cameraPosition.x += _cameraMoveSpeed * timestep;
-
-        if (GraphicEngine::Input::isKeyPressed(87))      // AZERTY Z - Move Up
-            _cameraPosition.y += _cameraMoveSpeed * timestep;
-        else if (GraphicEngine::Input::isKeyPressed(83)) // AZERTY S - Move Down
-            _cameraPosition.y -= _cameraMoveSpeed * timestep;
-
-        if (GraphicEngine::Input::isKeyPressed(69))      // AZERTY A - AntiCW Rotation
-            _cameraRotation -= _cameraRotationSpeed * timestep;
-        else if (GraphicEngine::Input::isKeyPressed(81)) // AZERTY E - CW Rotation
-            _cameraRotation += _cameraRotationSpeed * timestep;
+        _cameraController.onUpdate(_timestep);
 
         // Handles key pressed event to move triangle object
         if (GraphicEngine::Input::isKeyPressed(74))      // AZERTY J - Move Left
@@ -122,13 +106,10 @@ public:
         GraphicEngine::RenderCommand::setClearColor({ 0.1f, 0.1f, 0.1f, 1.0f });
         GraphicEngine::RenderCommand::clear();
 
-        _camera.setPosition(_cameraPosition);
-        _camera.setRotation(_cameraRotation);
 
+        GraphicEngine::Renderer::beginScene(_cameraController.getCamera());
 
-        GraphicEngine::Renderer::beginScene(_camera);
-
-        glm::mat4 scale = glm::scale(glm::mat4(1.0f), glm::vec3(0.1f));
+        glm::mat4 scale = glm::scale(glm::mat4(1.0f), glm::vec3(0.08f));
 
         auto flatColorShader = _shaderLibrary.get("flatColor");
         std::dynamic_pointer_cast<GraphicEngine::OpenGLShader>(flatColorShader)->bind();
@@ -149,7 +130,7 @@ public:
                     );
                 i++;
 
-                glm::vec3 pos(x * 0.11f, y * 0.11f, 0.0f);
+                glm::vec3 pos(x * 0.09f, y * 0.09f, 0.0f);
                 glm::mat4 transform = glm::translate(glm::mat4(1.0f), pos) * scale;
                 GraphicEngine::Renderer::submit(flatColorShader, _squareVA, transform);
             }
@@ -161,7 +142,7 @@ public:
         _checkboxTexture->bind(0);
         GraphicEngine::Renderer::submit(
             textureShader, _squareVA,
-            glm::translate(glm::mat4(1.0f), glm::vec3(1.35f, -1.0f, 0.0f)) * glm::scale(glm::mat4(1.0f), glm::vec3(0.3f))
+            glm::translate(glm::mat4(1.0f), glm::vec3(1.35f, -0.8f, 0.0f)) * glm::scale(glm::mat4(1.0f), glm::vec3(0.3f))
         );
 
         // Draw triangle
@@ -189,6 +170,7 @@ public:
 
     void onEvent(GraphicEngine::Event& event) override
     {
+        _cameraController.onEvent(event);
     }
 
 private:
@@ -199,15 +181,9 @@ private:
 
     GraphicEngine::Ref<GraphicEngine::Texture2D> _checkboxTexture;
 
-    GraphicEngine::OrthographicCamera _camera;
+    GraphicEngine::OrthographicCameraController _cameraController;
 
     float _timestep;
-
-    glm::vec3 _cameraPosition;
-    float _cameraMoveSpeed = 2.0f;
-
-    float _cameraRotation = 0.0f;
-    float _cameraRotationSpeed = 180.0f;
 
     glm::vec3 _trianglePosition;
     float _triangleMoveSpeed = 1.0f;

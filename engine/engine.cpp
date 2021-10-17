@@ -4,9 +4,7 @@
 #include "core.h"
 
 namespace GraphicEngine
-{
-    #define BIND_EVENT_FN(x) std::bind(&Engine::x, this, std::placeholders::_1)
-    
+{   
     Engine* Engine::_instance = nullptr;
 
     Engine::Engine()
@@ -14,7 +12,7 @@ namespace GraphicEngine
         _instance = this;
 
         window = Window::create();
-        window->setEventCallback(BIND_EVENT_FN(onEvent));
+        window->setEventCallback(BIND_EVENT_FN(Engine::onEvent));
 
         Renderer::init();
 
@@ -42,7 +40,7 @@ namespace GraphicEngine
     {
         EventDispatcher dispatcher(e);
 
-        dispatcher.dispatch<WindowCloseEvent>(BIND_EVENT_FN(onWindowClose));
+        dispatcher.dispatch<WindowCloseEvent>(BIND_EVENT_FN(Engine::onWindowClose));
 
         for (auto it = _layerStack.end(); it != _layerStack.begin();)
         {

@@ -18,6 +18,7 @@
 #include "buffer.h"
 #include "vertexArray.h"
 #include "camera.h"
+#include "orthographicCameraController.h"
 
 #include "event.h"
 #include "applicationEvent.h"

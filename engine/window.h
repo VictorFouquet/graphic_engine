@@ -19,7 +19,7 @@ namespace GraphicEngine
         unsigned int width;
         unsigned int height;
 
-        WindowProps(const std::string& title="Event Demo", unsigned int width=800, unsigned int height=600)
+        WindowProps(const std::string& title="Graphic Engine", unsigned int width=1280.0f, unsigned int height=720.0f)
             : title(title), width(width), height(height)
         {
         } 

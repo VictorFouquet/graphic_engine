@@ -3,6 +3,7 @@ add_library(engine STATIC
     input.cpp
     layer.cpp
     layerStack.cpp
+    orthographicCameraController.cpp
     window.cpp
 )
 

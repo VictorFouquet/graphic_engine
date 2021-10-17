@@ -11,6 +11,8 @@ namespace GraphicEngine
     public:
         OrthographicCamera(float left, float right, float bottom, float top);
 
+        void setProjection(float left, float right, float bottom, float top);
+
         inline const glm::vec3& getPosition() const { return _position; }
         inline void setPosition(const glm::vec3& position) { _position = position; recalculateViewMatrix(); }
 
