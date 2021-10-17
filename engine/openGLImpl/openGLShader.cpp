@@ -1,67 +1,93 @@
 #include "openGLShader.h"
 #include <GL/glew.h>
 #include "glm/gtc/type_ptr.hpp"
+#include <fstream>
+#include <iostream>
 
 namespace GraphicEngine
 {
     OpenGLShader::OpenGLShader(const std::string& vertexSrc, const std::string& fragmentSrc)
     {
-        unsigned int vertexShader = glCreateShader(GL_VERTEX_SHADER);
+        unsigned int vertexShader = compileShader(vertexSrc.c_str(), 0);
+        unsigned int fragmentShader = compileShader(fragmentSrc.c_str(), 1);
+        linkShaderProgram(vertexShader, fragmentShader);
+    }
+    
+    OpenGLShader::OpenGLShader(const std::string& filepath) 
+    {
+        std::ifstream inFile;
+        inFile.open(filepath); //open the input file
 
-        const GLchar *source = vertexSrc.c_str();
-        glShaderSource(vertexShader, 1, &source, 0);
+        std::stringstream strStream;
+        strStream << inFile.rdbuf(); //read the file
+        std::string str = strStream.str(); //str holds the content of the file
 
-        glCompileShader(vertexShader);
+        std::string start = "#type vertex";
+        std::string delimiter = "#type fragment";
+        auto limit = str.find(delimiter);
+
+        // Extracts vertex shader sources.
+        std::string vertexSrc = str.substr(start.length(), limit - delimiter.length());
+        std::string fragmentSrc = str.substr(limit + delimiter.length(), str.length());
+
+
+        const char *vertexShaderSrc = vertexSrc.c_str();
+        const char *fragmentShaderSrc = fragmentSrc.c_str();
+
+        unsigned int vertexShader = compileShader(vertexShaderSrc, 0);
+        unsigned int fragmentShader = compileShader(fragmentShaderSrc, 1);
+
+        linkShaderProgram(vertexShader, fragmentShader);
+    }
+
+    OpenGLShader::~OpenGLShader()
+    {
+        glDeleteProgram(_rendererID);
+    }
+
+    unsigned int OpenGLShader::compileShader(const char *src, uint32_t type) 
+    {
+        unsigned int shader;
+
+        if (type == 0)
+            shader = glCreateShader(GL_VERTEX_SHADER);
+        else
+            shader = glCreateShader(GL_FRAGMENT_SHADER);
+        
+        glShaderSource(shader, 1, &src, 0);
+
+        glCompileShader(shader);
 
         GLint isCompiled = 0;
-        glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &isCompiled);
+        glGetShaderiv(shader, GL_COMPILE_STATUS, &isCompiled);
         
         
         if (isCompiled == GL_FALSE)
         {
             GLint maxLength = 0;
-            glGetShaderiv(vertexShader, GL_INFO_LOG_LENGTH, &maxLength);
+            glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &maxLength);
 
             std::vector<GLchar> infoLog(maxLength);
-            glGetShaderInfoLog(vertexShader, maxLength, &maxLength, &infoLog[0]);
+            glGetShaderInfoLog(shader, maxLength, &maxLength, &infoLog[0]);
 
-            glDeleteShader(vertexShader);
+            glDeleteShader(shader);
             
-            std::cout << "Vertex shader compilation error" << std::endl;
+            std::cout << "Shader compilation error" << std::endl;
             std::cout << infoLog.data() << std::endl;
 
-            return;
-        }
-        GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-
-        source = fragmentSrc.c_str();
-        glShaderSource(fragmentShader, 1, &source, 0);
-
-        glCompileShader(fragmentShader);
-
-        glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &isCompiled);
-        
-        if (isCompiled == GL_FALSE)
-        {
-            GLint maxLength = 0;
-            glGetShaderiv(fragmentShader, GL_INFO_LOG_LENGTH, &maxLength);
-
-            std::vector<GLchar> infoLog(maxLength);
-            glGetShaderInfoLog(fragmentShader, maxLength, &maxLength, &infoLog[0]);
-
-            glDeleteShader(fragmentShader);
-            
-            std::cout << "Fragment shader compilation error" << std::endl;
-            std::cout << infoLog.data() << std::endl;
-            
-            return;
+            return -1;
         }
 
+        return shader;
+    }
+    
+    void OpenGLShader::linkShaderProgram(unsigned int vs, unsigned int fs) 
+    {
         _rendererID = glCreateProgram();
         GLuint program = _rendererID;
 
-        glAttachShader(program, vertexShader);
-        glAttachShader(program, fragmentShader);
+        glAttachShader(program, vs);
+        glAttachShader(program, fs);
 
         glLinkProgram(program);
 
@@ -76,8 +102,8 @@ namespace GraphicEngine
             std::vector<GLchar> infoLog(maxLength);
             glGetShaderInfoLog(program, maxLength, &maxLength, &infoLog[0]);
 
-            glDeleteShader(vertexShader);
-            glDeleteShader(fragmentShader);
+            glDeleteShader(vs);
+            glDeleteShader(fs);
             
             std::cout << "Shader link failure" << std::endl;
             std::cout << infoLog.data() << std::endl;
@@ -85,13 +111,8 @@ namespace GraphicEngine
             return;
         }
 
-        glDetachShader(program, vertexShader);
-        glDetachShader(program, fragmentShader);
-    }
-
-    OpenGLShader::~OpenGLShader()
-    {
-        glDeleteProgram(_rendererID);
+        glDetachShader(program, vs);
+        glDetachShader(program, fs);
     }
 
     void OpenGLShader::bind() const
@@ -145,4 +166,5 @@ namespace GraphicEngine
         GLint location = glGetUniformLocation(_rendererID, name.c_str());
         glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(matrix));
     }
+    
 }

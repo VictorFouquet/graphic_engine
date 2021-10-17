@@ -22,5 +22,20 @@ namespace GraphicEngine
         std::cout << "[ERROR] Unknown RendererAPI." << std::endl;
         return nullptr;
     }
+    
+    Shader* Shader::create(const std::string& filepath) 
+    {
+        switch (Renderer::getAPI())
+        {
+        case RendererAPI::API::None: 
+            std::cout << "[INFO] RendererAPI::None is not yet supported." << std::endl;
+            return nullptr;
+        case RendererAPI::API::OpenGL:
+            return new OpenGLShader(filepath);
+        }
+        
+        std::cout << "[ERROR] Unknown RendererAPI." << std::endl;
+        return nullptr;
+    }
 
 }

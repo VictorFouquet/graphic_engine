@@ -76,119 +76,14 @@ public:
 
         _squareVA->setIndexBuffer(squareIB);
 
-        std::string vertexSrc = R"(
-            #version 330 core
+        _shader.reset(GraphicEngine::Shader::create("client/assets/gradient.glsl"));
+        _flatColorShader.reset(GraphicEngine::Shader::create("client/assets/flatColor.glsl"));
+        _textureShader.reset(GraphicEngine::Shader::create("client/assets/texture.glsl"));
 
-            layout (location = 0) in vec3 aPos;
-            layout (location = 1) in vec4 aColor;
-            
-            uniform mat4 u_ViewProjection;
-            uniform mat4 u_Transform;
+        _checkboxTexture = GraphicEngine::Texture2D::create("client/assets/logo.png");
 
-            out vec3 vPosition;
-            out vec4 vColor;
-
-            void main()
-            {
-                vPosition = aPos;
-                vColor = aColor;
-                gl_Position = u_ViewProjection * u_Transform * vec4(aPos.x, aPos.y, aPos.z, 1.0);
-            };
-        )";
-
-        std::string fragmentSrc = R"(
-            #version 330 core
-
-            layout(location=0) out vec4 color;
-
-            in vec3 vPosition;
-            in vec4 vColor;
-
-            void main()
-            {
-                color = vec4(vPosition * 0.6 + 0.5, 1.0);
-                color = vColor;
-            };
-        )";
-
-        _shader.reset(GraphicEngine::Shader::create(vertexSrc, fragmentSrc));
-
-
-
-
-
-        std::string flatColorShaderVertexSrc = R"(
-            #version 330 core
-
-            layout (location = 0) in vec3 aPos;
-            
-            uniform mat4 u_ViewProjection;
-            uniform mat4 u_Transform;
-
-            out vec3 vPosition;
-
-            void main()
-            {
-                vPosition = aPos;
-                gl_Position = u_ViewProjection * u_Transform * vec4(aPos.x, aPos.y, aPos.z, 1.0);
-            };
-        )";
-
-        std::string flatColorShaderFragmentSrc = R"(
-            #version 330 core
-
-            layout(location=0) out vec4 color;
-
-            uniform vec4 u_Color;
-
-            in vec3 vPosition;
-
-            void main()
-            {
-                color = u_Color;
-            };
-        )";
-
-        _flatColorShader.reset(GraphicEngine::Shader::create(flatColorShaderVertexSrc, flatColorShaderFragmentSrc));
-
-
-
-
-        std::string textureShaderVertexSrc = R"(
-            #version 330 core
-
-            layout (location = 0) in vec3 aPos;
-            layout (location = 1) in vec2 aTexCoord;
-
-            uniform mat4 u_ViewProjection;
-            uniform mat4 u_Transform;
-
-            out vec2 v_TexCoord;
-
-            void main()
-            {
-                v_TexCoord = aTexCoord;
-                gl_Position = u_ViewProjection * u_Transform * vec4(aPos.x, aPos.y, aPos.z, 1.0);
-            };
-        )";
-
-        std::string textureShaderFragmentSrc = R"(
-            #version 330 core
-
-            layout(location=0) out vec4 color;
-
-            in vec2 v_TexCoord;
-
-            uniform sampler2D u_Texture;
-
-            void main()
-            {
-                color = texture(u_Texture, v_TexCoord);
-            };
-        )";
-
-        _textureShader.reset(GraphicEngine::Shader::create(textureShaderVertexSrc, textureShaderFragmentSrc));
-        _checkboxTexture = GraphicEngine::Texture2D::create("client/logo.png");
+        std::dynamic_pointer_cast<GraphicEngine::OpenGLShader>(_textureShader)->bind();
+        std::dynamic_pointer_cast<GraphicEngine::OpenGLShader>(_textureShader)->uploadUniformInt("u_Texture", 0);
 
         std::dynamic_pointer_cast<GraphicEngine::OpenGLShader>(_textureShader)->bind();
         std::dynamic_pointer_cast<GraphicEngine::OpenGLShader>(_textureShader)->uploadUniformInt("u_Texture", 0);
