@@ -7,7 +7,6 @@ add_library(engine STATIC
     window.cpp
 )
 
-find_package(GLEW REQUIRED)
 find_package(OpenGL REQUIRED)
 add_subdirectory(core)
 add_subdirectory(renderer)
@@ -15,7 +14,6 @@ add_subdirectory(openGLImpl)
 add_subdirectory(imGuiImpl)
 
 include_directories(
-    ${GLEW_INCLUDE_DIRS}
     ${OPENGL_INCLUDE_DIRS}
 )
 
@@ -24,7 +22,7 @@ target_include_directories(engine PUBLIC
 )
 
 target_link_libraries(engine
-    ${GLEW_LIBRARIES}
+    glad
     ${OPENGL_LIBRARIES}
     engine_core
     events

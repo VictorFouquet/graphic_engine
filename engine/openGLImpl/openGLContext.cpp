@@ -1,4 +1,5 @@
 #include "openGLContext.h"
+//#include "glad/glad.h"
 
 namespace GraphicEngine
 {
@@ -11,11 +12,9 @@ namespace GraphicEngine
     void OpenGLContext::init()
     {
         glfwMakeContextCurrent(_window);
-
-        if (glewInit() != GLEW_OK) {
-            std::cout << "Failed to initialize GLEW" << std::endl;
-            getchar();
-            glfwTerminate();
+        if (!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress)) {
+            std::cout << "Failed to initialize OpenGL context" << std::endl;
+            return;
         }
 
         std::cout << "OpenGL Renderer:\n";
