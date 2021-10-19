@@ -1,6 +1,7 @@
 #pragma once
 
 #include "precompiledHeaders.h"
+#include "core.h"
 
 namespace GraphicEngine
 {
@@ -116,7 +117,7 @@ namespace GraphicEngine
         virtual void setLayout(const BufferLayout layout) = 0;
         virtual const BufferLayout& getLayout() const = 0;
 
-        static VertexBuffer* create(float* vertices, uint32_t size);
+        static Ref<VertexBuffer> create(float* vertices, uint32_t size);
     };
 
     class IndexBuffer
@@ -129,7 +130,7 @@ namespace GraphicEngine
 
         virtual uint32_t getCount() const = 0;
         
-        static IndexBuffer* create(uint32_t* vertices, uint32_t size);
+        static Ref<IndexBuffer> create(uint32_t* vertices, uint32_t size);
     };
 
 }

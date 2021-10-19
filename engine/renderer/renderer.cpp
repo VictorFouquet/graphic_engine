@@ -3,7 +3,7 @@
 
 namespace GraphicEngine
 {
-    Renderer::SceneData* Renderer::_sceneData = new Renderer::SceneData;
+    Scope<Renderer::SceneData> Renderer::_sceneData = CreateScope<Renderer::SceneData>();
 
     void Renderer::init() 
     {

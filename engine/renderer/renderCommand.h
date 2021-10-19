@@ -38,7 +38,7 @@ namespace GraphicEngine
         }
 
     private:
-        static RendererAPI* _rendererAPI;
+        static Scope<RendererAPI> _rendererAPI;
     };
 
 }

@@ -7,9 +7,9 @@ static bool _GLFWInitialized = false;
 
 namespace GraphicEngine
 {
-    Window* Window::create(const WindowProps& props)
+    Ref<Window> Window::create(const WindowProps& props)
     {
-        return new Window(props);
+        return CreateRef<Window>(props);
     }
 
     Window::Window(const WindowProps& props)
@@ -41,10 +41,11 @@ namespace GraphicEngine
         
         if( window == NULL ){
             std::cout << "Failed to open GLFW window. If you have an Intel GPU, they are not 3.3 compatible.\n";
+            
             glfwTerminate();
         }
 
-        _context = new OpenGLContext(window);
+        _context = CreateScope<OpenGLContext>(window);
         _context->init();
         
 

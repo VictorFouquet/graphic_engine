@@ -6,7 +6,7 @@
 
 namespace GraphicEngine
 {
-    Input* Input::_instance = new Input();
+    Scope<Input> Input::_instance = CreateScope<Input>();
 
     bool Input::isKeyPressedImpl(int keycode)
     {

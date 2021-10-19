@@ -6,7 +6,7 @@
 namespace GraphicEngine
 {
     
-    VertexArray* VertexArray::create() 
+    Ref<VertexArray> VertexArray::create() 
     {
         switch (Renderer::getAPI())
         {
@@ -14,7 +14,7 @@ namespace GraphicEngine
             std::cout << "[INFO] RendererAPI::None is not yet supported." << std::endl;
             return nullptr;
         case RendererAPI::API::OpenGL:
-            return new OpenGLVertexArray();
+            return CreateRef<OpenGLVertexArray>();
         }
         
         std::cout << "[ERROR] Unknown RendererAPI." << std::endl;

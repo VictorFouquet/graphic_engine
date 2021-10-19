@@ -24,17 +24,17 @@ public:
         uint32_t indices[3] = { 0, 1, 2 };
 
 
-        _vertexArray.reset(GraphicEngine::VertexArray::create());
+        _vertexArray = GraphicEngine::VertexArray::create();
 
         GraphicEngine::Ref<GraphicEngine::VertexBuffer> vertexBuffer;
-        vertexBuffer.reset(GraphicEngine::VertexBuffer::create(vertices, sizeof(vertices)));
+        vertexBuffer = GraphicEngine::VertexBuffer::create(vertices, sizeof(vertices));
         vertexBuffer->bind();
         vertexBuffer->setLayout(layout);
 
         _vertexArray->addVertexBuffer(vertexBuffer);
 
         GraphicEngine::Ref<GraphicEngine::IndexBuffer> indexBuffer;
-        indexBuffer.reset(GraphicEngine::IndexBuffer::create(indices, sizeof(indices) / sizeof(uint32_t)));
+        indexBuffer = GraphicEngine::IndexBuffer::create(indices, sizeof(indices) / sizeof(uint32_t));
         indexBuffer->bind();
 
         _vertexArray->setIndexBuffer(indexBuffer);
@@ -42,7 +42,7 @@ public:
 
 
 
-        _squareVA.reset(GraphicEngine::VertexArray::create());
+        _squareVA = GraphicEngine::VertexArray::create();
 
         float squareVertices[4 * 5] = {
             -0.5f, -0.5f, 0.0f, // Vertex coordinates 
@@ -61,7 +61,7 @@ public:
         uint32_t squareIndices[6] = { 0, 1, 2, 2, 3, 0 };
 
         GraphicEngine::Ref<GraphicEngine::VertexBuffer> squareVB;
-        squareVB.reset(GraphicEngine::VertexBuffer::create(squareVertices, sizeof(squareVertices)));
+        squareVB = GraphicEngine::VertexBuffer::create(squareVertices, sizeof(squareVertices));
 
         squareVB->setLayout({
             { GraphicEngine::ShaderDataType::Float3, "aPos" },
@@ -71,7 +71,7 @@ public:
         _squareVA->addVertexBuffer(squareVB);
 
         GraphicEngine::Ref<GraphicEngine::IndexBuffer> squareIB; 
-        squareIB.reset(GraphicEngine::IndexBuffer::create(squareIndices, sizeof(squareIndices) / sizeof(uint32_t)));
+        squareIB = GraphicEngine::IndexBuffer::create(squareIndices, sizeof(squareIndices) / sizeof(uint32_t));
 
         _squareVA->setIndexBuffer(squareIB);
 

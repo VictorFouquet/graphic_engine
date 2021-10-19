@@ -1,6 +1,7 @@
 #pragma once
 
 #include "precompiledHeaders.h"
+#include "core.h"
 
 namespace GraphicEngine
 {
@@ -25,6 +26,6 @@ namespace GraphicEngine
         std::pair<float, float> getMousePositionImpl();
     
     private:
-        static Input* _instance;
+        static Scope<Input> _instance;
     };
 } // namespace GrapichEngine

@@ -10,7 +10,7 @@ Sandbox2DLayer::Sandbox2DLayer()
 
 void Sandbox2DLayer::onAttach() 
 {
-    _squareVA.reset(GraphicEngine::VertexArray::create());
+    _squareVA = GraphicEngine::VertexArray::create();
 
     float squareVertices[4 * 3] = {
         -0.5f, -0.5f, 0.0f, // Vertex coordinates 
@@ -22,7 +22,7 @@ void Sandbox2DLayer::onAttach()
     uint32_t squareIndices[6] = { 0, 1, 2, 2, 3, 0 };
 
     GraphicEngine::Ref<GraphicEngine::VertexBuffer> squareVB;
-    squareVB.reset(GraphicEngine::VertexBuffer::create(squareVertices, sizeof(squareVertices)));
+    squareVB = GraphicEngine::VertexBuffer::create(squareVertices, sizeof(squareVertices));
 
     squareVB->setLayout({
         { GraphicEngine::ShaderDataType::Float3, "aPos" }
@@ -31,9 +31,7 @@ void Sandbox2DLayer::onAttach()
     _squareVA->addVertexBuffer(squareVB);
 
     GraphicEngine::Ref<GraphicEngine::IndexBuffer> squareIB;
-    squareIB.reset(GraphicEngine::IndexBuffer::create(
-        squareIndices, sizeof(squareIndices) / sizeof(uint32_t)
-    ));
+    squareIB = GraphicEngine::IndexBuffer::create(squareIndices, sizeof(squareIndices) / sizeof(uint32_t));
 
     _squareVA->setIndexBuffer(squareIB);
 

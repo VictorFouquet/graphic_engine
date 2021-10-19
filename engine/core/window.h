@@ -1,5 +1,6 @@
 #pragma once
 
+#include "core.h"
 #include "precompiledHeaders.h"
 #include "event.h"
 #include "graphicsContext.h"
@@ -42,13 +43,13 @@ namespace GraphicEngine
         void setVSync(bool enabled);
         bool isVSync() const;
 
-        static Window* create(const WindowProps& props = WindowProps());
+        static Ref<Window> create(const WindowProps& props = WindowProps());
     private:
         virtual void init(const WindowProps& props);
         virtual void shutdown();
     private:
         GLFWwindow* window;
-        GraphicsContext* _context;
+        Scope<GraphicsContext> _context;
         
         struct WindowData
         {

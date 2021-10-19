@@ -47,7 +47,7 @@ namespace GraphicEngine
         inline static Engine& get() { return *_instance; }
         inline Window& getWindow() { return *window; }
     private:
-        Window* window;
+        Ref<Window> window;
         ImGuiLayer* imGuiLayer;
 
         static Engine* _instance;
