@@ -7,6 +7,7 @@ add_library(renderer STATIC
     texture.cpp
     vertexArray.cpp
     camera.cpp
+    orthographicCameraController.cpp
 )
 
 target_include_directories(renderer PUBLIC
@@ -16,6 +17,6 @@ target_include_directories(renderer PUBLIC
 
 target_link_libraries(renderer
     precompiledHeaders
-    engine_core
+    engine
     openGLImpl
 )

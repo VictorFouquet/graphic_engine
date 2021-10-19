@@ -1,5 +1,6 @@
 add_library(client STATIC
     client.cpp
+    sandbox2DLayer.cpp
 )
 
 set(FILES_TO_COPY
