@@ -31,14 +31,20 @@ namespace GraphicEngine
         if (!_GLFWInitialized)
         {
             int success = glfwInit();
+
             if (!success) {
                 std::cout << "Could not initialize GLFW" << std::endl;
             }
+
+            glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+            glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
+            glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
             _GLFWInitialized = true;
         }
 
         window = glfwCreateWindow((int)props.width, (int)props.height, data.title.c_str(), nullptr, nullptr);
-        
+
         if( window == NULL ){
             std::cout << "Failed to open GLFW window. If you have an Intel GPU, they are not 3.3 compatible.\n";
             
