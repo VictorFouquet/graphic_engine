@@ -14,16 +14,34 @@ namespace GraphicEngine
 
     void OrthographicCameraController::onUpdate(Timestep timestep) 
     {
+        // Handles mouse middle button pressed event to translate camera.
+        if (Input::isMouseButtonPressed(2))
+        {
+            _cameraPosition.x += (std::get<0>(_latestMousePosition) - Input::getMouseX()) * timestep * _cameraTranslationSpeed * 0.15f;
+            _cameraPosition.y -= (std::get<1>(_latestMousePosition) - Input::getMouseY()) * timestep * _cameraTranslationSpeed * 0.15f;
+        }
+
         // Handles key pressed event to translate camera.
         if (Input::isKeyPressed(65))      // AZERTY Q - Move Left
-            _cameraPosition.x -= _cameraTranslationSpeed * timestep;
+        {
+			_cameraPosition.x -= cos(glm::radians(_cameraRotation)) * _cameraTranslationSpeed * timestep;
+			_cameraPosition.y -= sin(glm::radians(_cameraRotation)) * _cameraTranslationSpeed * timestep;
+		}
         else if (Input::isKeyPressed(68)) // AZERTY D - Move Right
-            _cameraPosition.x += _cameraTranslationSpeed * timestep;
-
+        {
+			_cameraPosition.x += cos(glm::radians(_cameraRotation)) * _cameraTranslationSpeed * timestep;
+			_cameraPosition.y += sin(glm::radians(_cameraRotation)) * _cameraTranslationSpeed * timestep;
+		}
         if (Input::isKeyPressed(87))      // AZERTY Z - Move Up
-            _cameraPosition.y += _cameraTranslationSpeed * timestep;
+        {
+			_cameraPosition.x += -sin(glm::radians(_cameraRotation)) * _cameraTranslationSpeed * timestep;
+			_cameraPosition.y += cos(glm::radians(_cameraRotation)) * _cameraTranslationSpeed * timestep;
+		}
         else if (Input::isKeyPressed(83)) // AZERTY S - Move Down
-            _cameraPosition.y -= _cameraTranslationSpeed * timestep;
+        {
+			_cameraPosition.x -= -sin(glm::radians(_cameraRotation)) * _cameraTranslationSpeed * timestep;
+			_cameraPosition.y -= cos(glm::radians(_cameraRotation)) * _cameraTranslationSpeed * timestep;
+		}
 
         // Handles key pressed event to rotate camera.
         if (_rotation)
@@ -38,6 +56,7 @@ namespace GraphicEngine
 
         _camera.setPosition(_cameraPosition);
         _cameraTranslationSpeed = _zoomLevel;
+        _latestMousePosition = { Input::getMouseX(), Input::getMouseY() };
     }
     
     void OrthographicCameraController::onEvent(Event& event) 

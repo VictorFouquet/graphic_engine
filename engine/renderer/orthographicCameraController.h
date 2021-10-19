@@ -36,7 +36,7 @@ namespace GraphicEngine
 
         float _cameraTranslationSpeed = 2.0f;
         float _cameraRotationSpeed = 180.0f;
-
+        std::pair<float, float> _latestMousePosition = { 0.0f, 0.0f };
         OrthographicCamera _camera;
     };
 
