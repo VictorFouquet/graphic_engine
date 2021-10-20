@@ -6,11 +6,12 @@
 Sandbox2DLayer::Sandbox2DLayer()
     : GraphicEngine::Layer("Sandbox2D"), _cameraController(1280.0f / 720.0f, true)
 {
+
 }
 
 void Sandbox2DLayer::onAttach() 
 {
-
+    _logoTexture = GraphicEngine::Texture2D::create("client/assets/logo.png");
 }
 
 void Sandbox2DLayer::onDetach() 
@@ -18,7 +19,7 @@ void Sandbox2DLayer::onDetach()
     
 }
 
-void Sandbox2DLayer::onUpdate(GraphicEngine::Timestep timestep) 
+void Sandbox2DLayer::onUpdate(GraphicEngine::Timestep timestep)
 {
     _cameraController.onUpdate(timestep);
 
@@ -28,8 +29,10 @@ void Sandbox2DLayer::onUpdate(GraphicEngine::Timestep timestep)
 
     GraphicEngine::Renderer2D::beginScene(_cameraController.getCamera());
 
-    GraphicEngine::Renderer2D::drawQuad({ -1.0f,  0.0f },  0.0f, { 0.8f,  0.8f }, { 0.8f, 0.2f, 0.3f, 1.0f });
+    GraphicEngine::Renderer2D::drawQuad({ -1.0f,  0.0f },  { 0.8f,  0.8f }, { 0.8f, 0.2f, 0.3f, 1.0f });
     GraphicEngine::Renderer2D::drawQuad({  0.5f, -0.5f }, 45.0f, { 0.5f, 0.75f }, { 0.2f, 0.3f, 0.8f, 1.0f });
+
+    GraphicEngine::Renderer2D::drawQuad({ 0.0f, 0.0f, -0.1f }, { 10.0f, 10.0f }, _logoTexture, 10, _lightBlueColor);
 
     GraphicEngine::Renderer::endScene();
 }

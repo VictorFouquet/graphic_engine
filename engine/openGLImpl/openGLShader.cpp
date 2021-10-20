@@ -134,6 +134,11 @@ namespace GraphicEngine
     {
         glUseProgram(0);
     }
+
+    void OpenGLShader::setInt(const std::string& name, const int value) 
+    {
+        uploadUniformInt(name, value);
+    }
     
     void OpenGLShader::setFloat3(const std::string& name, const glm::vec3& value) 
     {
