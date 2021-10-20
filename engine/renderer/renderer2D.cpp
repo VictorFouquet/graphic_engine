@@ -16,8 +16,9 @@ namespace GraphicEngine
     struct Renderer2DStorage
     {
         Ref<VertexArray> quadVertexArray;
-        Ref<Shader> flatColorShader;
+        // Ref<Shader> flatColorShader;
         Ref<Shader> textureShader;
+        Ref<Texture> whiteTexture;
     };
 
     static Renderer2DStorage* _data;
@@ -38,19 +39,7 @@ namespace GraphicEngine
              0.0f,  1.0f        // Texture coordinates
         };
 
-        // float squareVertices[4 * 5] = {
-        //     -0.5f, -0.5f, 0.0f, // Vertex coordinates 
-        //             0.0f, 0.0f, // Texture coordinates
 
-        //      0.5f, -0.5f, 0.0f, // Vertex coordinates 
-        //             1.0f, 0.0f, // Texture coordinates
-
-        //      0.5f,  0.5f, 0.0f, // Vertex coordinates 
-        //             1.0f, 1.0f, // Texture coordinates
-
-        //     -0.5f,  0.5f, 0.0f, // Vertex coordinates 
-        //             0.0f, 1.0f, // Texture coordinates
-        // };
 
         uint32_t squareIndices[6] = { 0, 1, 2, 2, 3, 0 };
 
@@ -69,8 +58,11 @@ namespace GraphicEngine
 
         _data->quadVertexArray->setIndexBuffer(squareIB);
 
-        _data->flatColorShader = Shader::create("client/assets/flatColor.glsl");
-        _data->textureShader = Shader::create("client/assets/texture.glsl");
+        _data->whiteTexture = Texture2D::create(1, 1);
+        uint32_t whiteTextureData = 0xffffffff;
+        _data->whiteTexture->setData(&whiteTextureData, sizeof(uint32_t));
+        
+        _data->textureShader = Shader::create("client/assets/tiledColoredTexture.glsl");
         _data->textureShader->bind();
         _data->textureShader->setInt("u_Texture", 0);
     }
@@ -82,9 +74,6 @@ namespace GraphicEngine
     
     void Renderer2D::beginScene(const OrthographicCamera& camera) 
     {
-        _data->flatColorShader->bind();
-        _data->flatColorShader->setMat4("u_ViewProjection", camera.getViewProjectionMatrix());
-
         _data->textureShader->bind();
         _data->textureShader->setMat4("u_ViewProjection", camera.getViewProjectionMatrix());
     }
@@ -115,14 +104,13 @@ namespace GraphicEngine
 
     void Renderer2D::drawQuad(const glm::vec3& position, const float rotation, const glm::vec2& size, const glm::vec4& color) 
     {
-        _data->flatColorShader->bind();
-        _data->flatColorShader->setFloat4("u_Color", color);
-
+        _data->textureShader->setFloat4("u_Color", color);
+        _data->whiteTexture->bind();
         glm::mat4 transform = glm::translate(glm::mat4(1.0f), position) *
             glm::rotate(glm::mat4(1.0f), glm::radians(rotation), glm::vec3(0, 0, 1)) *
             glm::scale(glm::mat4(1.0f), { size.x, size.y, 0.0f } );
 
-        _data->flatColorShader->setMat4("u_Transform", transform);
+        _data->textureShader->setMat4("u_Transform", transform);
 
         _data->quadVertexArray->bind();
         RenderCommand::drawIndexed(_data->quadVertexArray);
@@ -144,26 +132,26 @@ namespace GraphicEngine
         drawQuad(position, 0.0f, size, texture);
     }
         
-    void Renderer2D::drawQuad(const glm::vec2& position, const glm::vec2& size, const Ref<Texture>& texture, const glm::vec4 tint) 
+    void Renderer2D::drawQuad(const glm::vec2& position, const glm::vec2& size, const Ref<Texture>& texture, const glm::vec4 color) 
     {
-        drawQuad({ position.x, position.y, 0.0f }, size, texture, tint);
+        drawQuad({ position.x, position.y, 0.0f }, size, texture, color);
     }
     
-    void Renderer2D::drawQuad(const glm::vec3& position, const glm::vec2& size, const Ref<Texture>& texture, const glm::vec4 tint) 
+    void Renderer2D::drawQuad(const glm::vec3& position, const glm::vec2& size, const Ref<Texture>& texture, const glm::vec4 color) 
     {
-        drawQuad(position, 0.0f, size, texture, tint);
+        drawQuad(position, 0.0f, size, texture, color);
     }
     
     void Renderer2D::drawQuad(const glm::vec2& position, const glm::vec2& size,
-                const Ref<Texture>& texture, const int repeat, const glm::vec4 tint) 
+                const Ref<Texture>& texture, const int tile, const glm::vec4 color) 
     {
-        drawQuad({ position.x, position.y, 0.0f }, size, texture, repeat, tint);
+        drawQuad({ position.x, position.y, 0.0f }, size, texture, tile, color);
     }
     
     void Renderer2D::drawQuad(const glm::vec3& position, const glm::vec2& size,
-                const Ref<Texture>& texture, const int repeat, const glm::vec4 tint) 
+                const Ref<Texture>& texture, const int tile, const glm::vec4 color) 
     {
-        drawQuad(position, 0.0f, size, texture, repeat, tint);
+        drawQuad(position, 0.0f, size, texture, tile, color);
 
     }
     
@@ -177,46 +165,46 @@ namespace GraphicEngine
         drawQuad({ position.x, position.y, 0.0f}, rotation, size, texture, 1);
     }
     
-    void Renderer2D::drawQuad(const glm::vec2& position, const glm::vec2& size, const Ref<Texture>& texture, const int repeat) 
+    void Renderer2D::drawQuad(const glm::vec2& position, const glm::vec2& size, const Ref<Texture>& texture, const int tile) 
     {
-        drawQuad({ position.x, position.y, 0.0f}, 0.0f, size, texture, repeat);
+        drawQuad({ position.x, position.y, 0.0f}, 0.0f, size, texture, tile);
     }
     
-    void Renderer2D::drawQuad(const glm::vec3& position, const glm::vec2& size, const Ref<Texture>& texture, const int repeat) 
+    void Renderer2D::drawQuad(const glm::vec3& position, const glm::vec2& size, const Ref<Texture>& texture, const int tile) 
     {
-        drawQuad(position, 0.0f, size, texture, repeat);
+        drawQuad(position, 0.0f, size, texture, tile);
     }
 
-    void Renderer2D::drawQuad(const glm::vec2& position, const float rotation, const glm::vec2& size, const Ref<Texture>& texture, const int repeat) 
+    void Renderer2D::drawQuad(const glm::vec2& position, const float rotation, const glm::vec2& size, const Ref<Texture>& texture, const int tile) 
     {
-        drawQuad({ position.x, position.y, 0.0f}, rotation, size, texture, repeat);
+        drawQuad({ position.x, position.y, 0.0f}, rotation, size, texture, tile);
     }
     
-    void Renderer2D::drawQuad(const glm::vec3& position, const float rotation, const glm::vec2& size, const Ref<Texture>& texture, const int repeat) 
+    void Renderer2D::drawQuad(const glm::vec3& position, const float rotation, const glm::vec2& size, const Ref<Texture>& texture, const int tile) 
     {
-        drawQuad(position, rotation, size, texture, repeat, {1.0f, 1.0f, 1.0f, 1.0f});
+        drawQuad(position, rotation, size, texture, tile, {1.0f, 1.0f, 1.0f, 1.0f});
     }
     
     void Renderer2D::drawQuad(const glm::vec2& position, const float rotation, const glm::vec2& size,
-        const Ref<Texture>& texture, const glm::vec4 tint) 
+        const Ref<Texture>& texture, const glm::vec4 color) 
     {
-        drawQuad({ position.x, position.y, 0.0f }, rotation, size, texture, tint);
+        drawQuad({ position.x, position.y, 0.0f }, rotation, size, texture, color);
     }
     
     void Renderer2D::drawQuad(const glm::vec3& position, const float rotation, const glm::vec2& size,
-        const Ref<Texture>& texture, const glm::vec4 tint) 
+        const Ref<Texture>& texture, const glm::vec4 color) 
     {
-        drawQuad(position, rotation, size, texture, 1, tint);
+        drawQuad(position, rotation, size, texture, 1, color);
     }
     
     void Renderer2D::drawQuad(const glm::vec2& position, const float rotation, const glm::vec2& size,
-        const Ref<Texture>& texture, const int repeat, const glm::vec4 tint) 
+        const Ref<Texture>& texture, const int tile, const glm::vec4 color) 
     {
-        drawQuad({ position.x, position.y, 0.0f }, rotation, size, texture, repeat, tint);
+        drawQuad({ position.x, position.y, 0.0f }, rotation, size, texture, tile, color);
     }
 
     void Renderer2D::drawQuad(const glm::vec3& position, const float rotation, const glm::vec2& size,
-        const Ref<Texture>& texture, const int repeat, const glm::vec4 tint) 
+        const Ref<Texture>& texture, const int tile, const glm::vec4 color) 
     {
         _data->textureShader->bind();
 
@@ -225,8 +213,8 @@ namespace GraphicEngine
             glm::scale(glm::mat4(1.0f), { size.x, size.y, 0.0f } );
 
         _data->textureShader->setMat4("u_Transform", transform);
-        _data->textureShader->setInt("u_Repeat", repeat);
-        _data->textureShader->setFloat4("u_Tint", tint);
+        _data->textureShader->setInt("u_Tile", tile);
+        _data->textureShader->setFloat4("u_Color", color);
 
         texture->bind();
 

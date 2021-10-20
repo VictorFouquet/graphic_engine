@@ -11,7 +11,7 @@ Sandbox2DLayer::Sandbox2DLayer()
 
 void Sandbox2DLayer::onAttach() 
 {
-    _logoTexture = GraphicEngine::Texture2D::create("client/assets/logo.png");
+    _texture = GraphicEngine::Texture2D::create("client/assets/checkerboard.png");
 }
 
 void Sandbox2DLayer::onDetach() 
@@ -29,10 +29,12 @@ void Sandbox2DLayer::onUpdate(GraphicEngine::Timestep timestep)
 
     GraphicEngine::Renderer2D::beginScene(_cameraController.getCamera());
 
+    // Draws quad with flat color
     GraphicEngine::Renderer2D::drawQuad({ -1.0f,  0.0f },  { 0.8f,  0.8f }, { 0.8f, 0.2f, 0.3f, 1.0f });
     GraphicEngine::Renderer2D::drawQuad({  0.5f, -0.5f }, 45.0f, { 0.5f, 0.75f }, { 0.2f, 0.3f, 0.8f, 1.0f });
-
-    GraphicEngine::Renderer2D::drawQuad({ 0.0f, 0.0f, -0.1f }, { 10.0f, 10.0f }, _logoTexture, 10, _lightBlueColor);
+    
+    // Draws quad with tinted and tiled texture
+    GraphicEngine::Renderer2D::drawQuad({ 0.0f, 0.0f, -0.1f }, { 10.0f, 10.0f }, _texture, 10, _lightBlueColor);
 
     GraphicEngine::Renderer::endScene();
 }

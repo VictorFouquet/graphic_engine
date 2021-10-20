@@ -20,17 +20,17 @@ namespace GraphicEngine
         // Textured quad
         static void drawQuad(const glm::vec2& position, const glm::vec2& size, const Ref<Texture>& texture);
         static void drawQuad(const glm::vec3& position, const glm::vec2& size, const Ref<Texture>& texture);
-        // Repeated textured quad
-        static void drawQuad(const glm::vec2& position, const glm::vec2& size, const Ref<Texture>& texture, const int repeat);
-        static void drawQuad(const glm::vec3& position, const glm::vec2& size, const Ref<Texture>& texture, const int repeat);
-        // Tinted textured quad
-        static void drawQuad(const glm::vec2& position, const glm::vec2& size, const Ref<Texture>& texture, const glm::vec4 tint);
-        static void drawQuad(const glm::vec3& position, const glm::vec2& size, const Ref<Texture>& texture, const glm::vec4 tint);
-        // Repeated Tinted textured quad
+        // Tiled textured quad
+        static void drawQuad(const glm::vec2& position, const glm::vec2& size, const Ref<Texture>& texture, const int tile);
+        static void drawQuad(const glm::vec3& position, const glm::vec2& size, const Ref<Texture>& texture, const int tile);
+        // Colored textured quad
+        static void drawQuad(const glm::vec2& position, const glm::vec2& size, const Ref<Texture>& texture, const glm::vec4 color);
+        static void drawQuad(const glm::vec3& position, const glm::vec2& size, const Ref<Texture>& texture, const glm::vec4 color);
+        // Tiled Colored textured quad
         static void drawQuad(const glm::vec2& position, const glm::vec2& size,
-            const Ref<Texture>& texture, const int repeat, const glm::vec4 tint);
+            const Ref<Texture>& texture, const int tile, const glm::vec4 color);
         static void drawQuad(const glm::vec3& position, const glm::vec2& size,
-            const Ref<Texture>& texture, const int repeat, const glm::vec4 tint);
+            const Ref<Texture>& texture, const int tile, const glm::vec4 color);
 
         // Rotated quad
         static void drawQuad(const glm::vec2& position, const float rotation, const glm::vec2& size, const glm::vec4& color);
@@ -38,21 +38,21 @@ namespace GraphicEngine
         // Rotated textured quad
         static void drawQuad(const glm::vec2& position, const float rotation, const glm::vec2& size, const Ref<Texture>& texture);
         static void drawQuad(const glm::vec3& position, const float rotation, const glm::vec2& size, const Ref<Texture>& texture);
-        // Rotated tinted textured quad
+        // Rotated Colored textured quad
         static void drawQuad(const glm::vec2& position, const float rotation, const glm::vec2& size,
-            const Ref<Texture>& texture, const glm::vec4 tint);
+            const Ref<Texture>& texture, const glm::vec4 color);
         static void drawQuad(const glm::vec3& position, const float rotation, const glm::vec2& size,
-            const Ref<Texture>& texture, const glm::vec4 tint);
-        // Rotated repeated textured quad
+            const Ref<Texture>& texture, const glm::vec4 color);
+        // Rotated tiled textured quad
         static void drawQuad(const glm::vec2& position, const float rotation, const glm::vec2& size,
-            const Ref<Texture>& texture, const int repeat);
+            const Ref<Texture>& texture, const int tile);
         static void drawQuad(const glm::vec3& position, const float rotation, const glm::vec2& size,
-            const Ref<Texture>& texture, const int repeat);
-        // Rotated tinted textured quad
+            const Ref<Texture>& texture, const int tile);
+        // Rotated Colored textured quad
         static void drawQuad(const glm::vec2& position, const float rotation, const glm::vec2& size,
-            const Ref<Texture>& texture, const int repeat, const glm::vec4 tint);
+            const Ref<Texture>& texture, const int tile, const glm::vec4 color);
         static void drawQuad(const glm::vec3& position, const float rotation, const glm::vec2& size,
-            const Ref<Texture>& texture, const int repeat, const glm::vec4 tint);
+            const Ref<Texture>& texture, const int tile, const glm::vec4 color);
 
     };
 }

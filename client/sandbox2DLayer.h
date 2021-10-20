@@ -20,6 +20,6 @@ private:
 
     glm::vec4 _lightBlueColor = { 0.5f, 0.6f, 1.0f, 1.0f };
 
-    GraphicEngine::Ref<GraphicEngine::Texture2D> _logoTexture;
+    GraphicEngine::Ref<GraphicEngine::Texture2D> _texture;
     GraphicEngine::Ref<GraphicEngine::VertexArray>  _squareVA;
 };
