@@ -13,7 +13,7 @@ namespace GraphicEngine
         static void beginScene(const OrthographicCamera& camera);
         static void endScene();
 
-        static void drawQuad(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color);
-        static void drawQuad(const glm::vec3& position, const glm::vec2& size, const glm::vec4& color);
+        static void drawQuad(const glm::vec2& position, const float rotation, const glm::vec2& size, const glm::vec4& color);
+        static void drawQuad(const glm::vec3& position, const float rotation, const glm::vec2& size, const glm::vec4& color);
     };
 }

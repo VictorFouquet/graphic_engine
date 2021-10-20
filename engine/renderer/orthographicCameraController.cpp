@@ -17,8 +17,10 @@ namespace GraphicEngine
         // Handles mouse middle button pressed event to translate camera.
         if (Input::isMouseButtonPressed(2))
         {
-            _cameraPosition.x += (std::get<0>(_latestMousePosition) - Input::getMouseX()) * timestep * _cameraTranslationSpeed * 0.15f;
-            _cameraPosition.y -= (std::get<1>(_latestMousePosition) - Input::getMouseY()) * timestep * _cameraTranslationSpeed * 0.15f;
+            if (_cameraPosition.x != std::get<0>(_latestMousePosition)) {
+                _cameraPosition.x += (std::get<0>(_latestMousePosition) - Input::getMouseX()) * timestep * _cameraTranslationSpeed * 0.15f;
+                _cameraPosition.y -= (std::get<1>(_latestMousePosition) - Input::getMouseY()) * timestep * _cameraTranslationSpeed * 0.15f;
+            }
         }
 
         // Handles key pressed event to translate camera.

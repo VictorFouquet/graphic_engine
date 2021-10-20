@@ -4,8 +4,11 @@
 #include "core.h"
 #include "vertexArray.h"
 #include "shader.h"
-#include "openGLShader.h"
 #include "renderCommand.h"
+#include "glm/glm.hpp"
+#include "glm/gtc/matrix_transform.hpp"
+#include "glm/gtc/type_ptr.hpp"
+#include "glm/gtc/matrix_transform.hpp"
 
 namespace GraphicEngine
 {
@@ -56,11 +59,8 @@ namespace GraphicEngine
     
     void Renderer2D::beginScene(const OrthographicCamera& camera) 
     {
-        std::dynamic_pointer_cast<OpenGLShader>(_data->flatColorShader)->bind();
-        std::dynamic_pointer_cast<OpenGLShader>(_data->flatColorShader)->uploadUniformMat4(
-            "u_ViewProjection", camera.getViewProjectionMatrix()
-        );
-        std::dynamic_pointer_cast<OpenGLShader>(_data->flatColorShader)->uploadUniformMat4("u_Transform", glm::mat4(1.0f));
+        _data->flatColorShader->bind();
+        _data->flatColorShader->setMat4("u_ViewProjection", camera.getViewProjectionMatrix());
     }
     
     void Renderer2D::endScene() 
@@ -68,18 +68,24 @@ namespace GraphicEngine
         
     }
     
-    void Renderer2D::drawQuad(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color) 
+    void Renderer2D::drawQuad(const glm::vec2& position, const float rotation, const glm::vec2& size, const glm::vec4& color) 
     {
-        std::dynamic_pointer_cast<OpenGLShader>(_data->flatColorShader)->bind();
-        std::dynamic_pointer_cast<OpenGLShader>(_data->flatColorShader)->uploadUniformFloat4("u_Color", color);
+        drawQuad({ position.x, position.y, 0.0f }, rotation, size, color);
+    }
+
+    void Renderer2D::drawQuad(const glm::vec3& position, const float rotation, const glm::vec2& size, const glm::vec4& color) 
+    {
+        _data->flatColorShader->bind();
+        _data->flatColorShader->setFloat4("u_Color", color);
+
+        glm::mat4 transform = glm::translate(glm::mat4(1.0f), position) * /* add rotation here when needed */
+            glm::rotate(glm::mat4(1.0f), glm::radians(rotation), glm::vec3(0, 0, 1)) *
+            glm::scale(glm::mat4(1.0f), { size.x, size.y, 0.0f } );
+
+        _data->flatColorShader->setMat4("u_Transform", transform);
 
         _data->quadVertexArray->bind();
         RenderCommand::drawIndexed(_data->quadVertexArray);
-    }
-
-    void Renderer2D::drawQuad(const glm::vec3& position, const glm::vec2& size, const glm::vec4& color) 
-    {
-        drawQuad({ position.x, position.y, 0.0f }, size, color);
     }
 
 }

@@ -28,7 +28,8 @@ void Sandbox2DLayer::onUpdate(GraphicEngine::Timestep timestep)
 
     GraphicEngine::Renderer2D::beginScene(_cameraController.getCamera());
 
-    GraphicEngine::Renderer2D::drawQuad({ 0.0f, 0.0f }, { 1.0f, 1.0f }, { 0.2f, 0.3f, 0.8f, 1.0f });
+    GraphicEngine::Renderer2D::drawQuad({ -1.0f,  0.0f },  0.0f, { 0.8f,  0.8f }, { 0.8f, 0.2f, 0.3f, 1.0f });
+    GraphicEngine::Renderer2D::drawQuad({  0.5f, -0.5f }, 45.0f, { 0.5f, 0.75f }, { 0.2f, 0.3f, 0.8f, 1.0f });
 
     GraphicEngine::Renderer::endScene();
 }
