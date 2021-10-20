@@ -3,6 +3,7 @@ add_library(renderer STATIC
     rendererAPI.cpp
     renderCommand.cpp
     renderer.cpp
+    renderer2D.cpp
     shader.cpp
     texture.cpp
     vertexArray.cpp

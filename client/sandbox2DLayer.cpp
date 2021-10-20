@@ -10,32 +10,7 @@ Sandbox2DLayer::Sandbox2DLayer()
 
 void Sandbox2DLayer::onAttach() 
 {
-    _squareVA = GraphicEngine::VertexArray::create();
 
-    float squareVertices[4 * 3] = {
-        -0.5f, -0.5f, 0.0f, // Vertex coordinates 
-         0.5f, -0.5f, 0.0f, // Vertex coordinates 
-         0.5f,  0.5f, 0.0f, // Vertex coordinates 
-        -0.5f,  0.5f, 0.0f, // Vertex coordinates 
-    };
-
-    uint32_t squareIndices[6] = { 0, 1, 2, 2, 3, 0 };
-
-    GraphicEngine::Ref<GraphicEngine::VertexBuffer> squareVB;
-    squareVB = GraphicEngine::VertexBuffer::create(squareVertices, sizeof(squareVertices));
-
-    squareVB->setLayout({
-        { GraphicEngine::ShaderDataType::Float3, "aPos" }
-    });
-
-    _squareVA->addVertexBuffer(squareVB);
-
-    GraphicEngine::Ref<GraphicEngine::IndexBuffer> squareIB;
-    squareIB = GraphicEngine::IndexBuffer::create(squareIndices, sizeof(squareIndices) / sizeof(uint32_t));
-
-    _squareVA->setIndexBuffer(squareIB);
-
-    _shader = GraphicEngine::Shader::create("client/assets/flatColor.glsl");
 }
 
 void Sandbox2DLayer::onDetach() 
@@ -51,17 +26,9 @@ void Sandbox2DLayer::onUpdate(GraphicEngine::Timestep timestep)
     GraphicEngine::RenderCommand::clear();
 
 
-    GraphicEngine::Renderer::beginScene(_cameraController.getCamera());
+    GraphicEngine::Renderer2D::beginScene(_cameraController.getCamera());
 
-    glm::mat4 scale = glm::scale(glm::mat4(1.0f), glm::vec3(0.08f));
-
-
-    std::dynamic_pointer_cast<GraphicEngine::OpenGLShader>(_shader);
-    std::dynamic_pointer_cast<GraphicEngine::OpenGLShader>(_shader)->uploadUniformFloat4(
-        "u_Color", _lightBlueColor
-    );
-
-    GraphicEngine::Renderer::submit(_shader, _squareVA, glm::scale(glm::mat4(1.0f), glm::vec3(1.5f)));
+    GraphicEngine::Renderer2D::drawQuad({ 0.0f, 0.0f }, { 1.0f, 1.0f }, { 0.2f, 0.3f, 0.8f, 1.0f });
 
     GraphicEngine::Renderer::endScene();
 }

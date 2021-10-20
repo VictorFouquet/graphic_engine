@@ -8,6 +8,7 @@
 #include "timestep.h"
 
 #include "renderer.h"
+#include "renderer2D.h"
 #include "window.h"
 #include "layer.h"
 #include "layerStack.h"

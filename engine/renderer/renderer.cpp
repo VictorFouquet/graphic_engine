@@ -1,5 +1,6 @@
 #include "renderer.h"
 #include "openGLShader.h"
+#include "renderer2D.h"
 
 namespace GraphicEngine
 {
@@ -8,6 +9,7 @@ namespace GraphicEngine
     void Renderer::init() 
     {
         RenderCommand::init();
+        Renderer2D::init();
     }
 
     void Renderer::onWindowResize(uint32_t width, uint32_t height)
