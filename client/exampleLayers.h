@@ -17,8 +17,8 @@ public:
         };
 
         GraphicEngine::BufferLayout layout = {
-            { GraphicEngine::ShaderDataType::Float3, "aPos" },
-            { GraphicEngine::ShaderDataType::Float4, "aColor" }
+            { GraphicEngine::ShaderDataType::Float3, "a_Pos" },
+            { GraphicEngine::ShaderDataType::Float4, "a_Color" }
         };
         
         uint32_t indices[3] = { 0, 1, 2 };
@@ -64,8 +64,8 @@ public:
         squareVB = GraphicEngine::VertexBuffer::create(squareVertices, sizeof(squareVertices));
 
         squareVB->setLayout({
-            { GraphicEngine::ShaderDataType::Float3, "aPos" },
-            { GraphicEngine::ShaderDataType::Float2, "aTexCoord" }
+            { GraphicEngine::ShaderDataType::Float3, "a_Pos" },
+            { GraphicEngine::ShaderDataType::Float2, "a_TexCoord" }
         });
 
         _squareVA->addVertexBuffer(squareVB);

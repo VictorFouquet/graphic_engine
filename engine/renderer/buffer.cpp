@@ -5,6 +5,21 @@
 namespace GraphicEngine
 {
 
+    Ref<VertexBuffer> VertexBuffer::create(uint32_t size)
+    {
+        switch (Renderer::getAPI())
+        {
+        case RendererAPI::API::None: 
+            std::cout << "[INFO] RendererAPI::None is not yet supported." << std::endl;
+            return nullptr;
+        case RendererAPI::API::OpenGL:
+            return std::make_shared<OpenGLVertexBuffer>(size);
+        }
+        
+        std::cout << "[ERROR] Unknown RendererAPI." << std::endl;
+        return nullptr;
+    }
+
     Ref<VertexBuffer> VertexBuffer::create(float* vertices, uint32_t size)
     {
         switch (Renderer::getAPI())

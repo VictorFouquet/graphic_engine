@@ -23,7 +23,12 @@ namespace GraphicEngine
         virtual uint32_t getHeight() const override { return _height; };
 
         virtual void bind(uint32_t slot = 0) const override;
-    private:
+
+        virtual bool operator==(const Texture& other) const override
+        { 
+            return _rendererID == ((OpenGLTexture2D&)other)._rendererID;
+        };
+
         std::string _path;
         uint32_t _width, _height;
         uint32_t _rendererID;
