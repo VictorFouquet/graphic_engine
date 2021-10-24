@@ -13,6 +13,11 @@ Sandbox2DLayer::Sandbox2DLayer()
 void Sandbox2DLayer::onAttach() 
 {
     _texture = GraphicEngine::Texture2D::create("client/assets/checkerboard.png");
+
+    GraphicEngine::FrameBufferSpecification fbSpec;
+    fbSpec.width = 1280;
+    fbSpec.height = 720;
+    _frameBuffer = GraphicEngine::FrameBuffer::create(fbSpec);
 }
 
 void Sandbox2DLayer::onDetach() 
@@ -23,6 +28,8 @@ void Sandbox2DLayer::onDetach()
 void Sandbox2DLayer::onUpdate(GraphicEngine::Timestep timestep)
 {
     _cameraController.onUpdate(timestep);
+
+    _frameBuffer->bind();
 
     GraphicEngine::RenderCommand::setClearColor({ 0.1f, 0.1f, 0.1f, 1.0f });
     GraphicEngine::RenderCommand::clear();
@@ -43,6 +50,8 @@ void Sandbox2DLayer::onUpdate(GraphicEngine::Timestep timestep)
     GraphicEngine::Renderer2D::drawRotatedQuad({ 0.0f, 0.0f, 0.0f }, rotation2, { 1.0f, 1.0f }, _texture, 20);
 
     GraphicEngine::Renderer2D::endScene();
+
+    _frameBuffer->unbind();
 }
 
 void Sandbox2DLayer::onEvent(GraphicEngine::Event& event) 
@@ -124,8 +133,8 @@ void Sandbox2DLayer::onImGuiRender()
 
     ImGui::Begin("Viewport");
         
-    uint32_t textureID = _texture->getRendererID();
-    ImGui::Image((void*)textureID, ImVec2( 256.0f, 256.0f ));
+    uint32_t textureID = _frameBuffer->getColorAttachmentRendererID();
+    ImGui::Image((void*)textureID, ImVec2( 1280.0f, 720.0f ));
 
     ImGui::End();
 

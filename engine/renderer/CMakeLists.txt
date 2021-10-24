@@ -1,5 +1,6 @@
 add_library(renderer STATIC
     buffer.cpp
+    frameBuffer.cpp
     rendererAPI.cpp
     renderCommand.cpp
     renderer.cpp

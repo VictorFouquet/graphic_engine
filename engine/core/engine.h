@@ -18,6 +18,7 @@
 #include "texture.h"
 #include "subTexture2D.h"
 #include "buffer.h"
+#include "frameBuffer.h"
 #include "vertexArray.h"
 #include "camera.h"
 #include "orthographicCameraController.h"

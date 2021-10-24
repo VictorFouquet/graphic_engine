@@ -1,6 +1,7 @@
 add_library(openGLImpl STATIC
     openGLBuffer.cpp
     openGLContext.cpp
+    openGLFrameBuffer.cpp
     openGLRendererAPI.cpp
     openGLVertexArray.cpp
     openGLShader.cpp
