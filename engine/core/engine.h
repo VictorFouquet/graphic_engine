@@ -16,6 +16,7 @@
 #include "openGLShader.h"
 #include "shader.h"
 #include "texture.h"
+#include "subTexture2D.h"
 #include "buffer.h"
 #include "vertexArray.h"
 #include "camera.h"

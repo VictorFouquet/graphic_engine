@@ -69,11 +69,16 @@ namespace GraphicEngine
         dispatcher.dispatch<WindowResizeEvent>(BIND_EVENT_FN(OrthographicCameraController::onWindowResized));
     }
     
+    void OrthographicCameraController::calculateView() 
+    {
+        _camera.setProjection( -_aspectRatio * _zoomLevel, _aspectRatio * _zoomLevel, -_zoomLevel, _zoomLevel );
+    }
+    
     bool OrthographicCameraController::onMouseScrolled(MouseScrolledEvent& e) 
     {
         _zoomLevel -= e.getYOffset() * 0.25f;
         _zoomLevel = std::max(_zoomLevel, 0.25f);
-        _camera.setProjection(-_aspectRatio * _zoomLevel, _aspectRatio * _zoomLevel, -_zoomLevel, _zoomLevel);
+        calculateView();
 
         return false;
     }
@@ -81,8 +86,8 @@ namespace GraphicEngine
     bool OrthographicCameraController::onWindowResized(WindowResizeEvent& e) 
     {
         _aspectRatio = (float)e.getWidth() / (float)e.getHeight();
-        _camera.setProjection(-_aspectRatio * _zoomLevel, _aspectRatio * _zoomLevel, -_zoomLevel, _zoomLevel);
-
+        calculateView();
+        
         return false;
     }
 

@@ -3,6 +3,7 @@
 #include "glm/gtc/matrix_transform.hpp"
 #include "core.h"
 
+
 Sandbox2DLayer::Sandbox2DLayer()
     : GraphicEngine::Layer("Sandbox2D"), _cameraController(1280.0f / 720.0f, true)
 {
@@ -12,6 +13,7 @@ Sandbox2DLayer::Sandbox2DLayer()
 void Sandbox2DLayer::onAttach() 
 {
     _texture = GraphicEngine::Texture2D::create("client/assets/checkerboard.png");
+    //_cameraController.setZoomLevel(8.0f);
 }
 
 void Sandbox2DLayer::onDetach() 
@@ -25,7 +27,6 @@ void Sandbox2DLayer::onUpdate(GraphicEngine::Timestep timestep)
 
     GraphicEngine::RenderCommand::setClearColor({ 0.1f, 0.1f, 0.1f, 1.0f });
     GraphicEngine::RenderCommand::clear();
-
 
     GraphicEngine::Renderer2D::beginScene(_cameraController.getCamera());
 

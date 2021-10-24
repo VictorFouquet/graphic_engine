@@ -6,6 +6,7 @@ add_library(renderer STATIC
     renderer2D.cpp
     shader.cpp
     texture.cpp
+    subTexture2D.cpp
     vertexArray.cpp
     camera.cpp
     orthographicCameraController.cpp
