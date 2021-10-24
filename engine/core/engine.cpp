@@ -96,4 +96,9 @@ namespace GraphicEngine
         return false;
     }
 
+    void Engine::close()
+    {
+        _running = false;
+    }
+
 } // namespace GraphicEngine

@@ -10,8 +10,8 @@ ClientApp::ClientApp() : GraphicEngine::Engine()
     // Comment one of the following lines to choose the example to run.
     
     // engine.pushLayer(new ExampleLayer());
-    // engine.pushLayer(new Sandbox2DLayer());
-    engine.pushLayer(new TileSheetLayer());
+    // engine.pushLayer(new TileSheetLayer());
+    engine.pushLayer(new Sandbox2DLayer());
     engine.run();
 }
 
