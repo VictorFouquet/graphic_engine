@@ -2,16 +2,24 @@
 #include "exampleLayers.h"
 #include "sandbox2DLayer.h"
 #include "tileSheetLayer.h"
+#include "editorLayer.h"
 
 ClientApp::ClientApp() : GraphicEngine::Engine()
 {
     GraphicEngine::Engine& engine = GraphicEngine::Engine::get();
 
-    // Comment one of the following lines to choose the example to run.
-    
-    // engine.pushLayer(new ExampleLayer());
-    // engine.pushLayer(new TileSheetLayer());
+#if TILE_DEMO
+    engine.pushLayer(new TileSheetLayer());
+#endif
+
+#if RUNTIME_DEMO
     engine.pushLayer(new Sandbox2DLayer());
+#endif
+
+#if EDITOR_MODE
+    engine.pushLayer(new GraphicEngine::EditorLayer());
+#endif
+    
     engine.run();
 }
 

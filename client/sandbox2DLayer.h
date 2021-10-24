@@ -17,7 +17,6 @@ public:
 private:
     GraphicEngine::OrthographicCameraController _cameraController;
     GraphicEngine::Ref<GraphicEngine::Shader> _shader;
-    GraphicEngine::Ref<GraphicEngine::FrameBuffer> _frameBuffer;
     
     glm::vec4 _lightBlueColor = { 0.5f, 0.6f, 1.0f, 1.0f };
 

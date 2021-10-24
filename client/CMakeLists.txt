@@ -26,4 +26,5 @@ target_link_libraries(client
     precompiledHeaders
     events
     engine
+    editor
 )
