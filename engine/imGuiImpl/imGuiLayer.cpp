@@ -32,6 +32,19 @@ namespace GraphicEngine
         ImGui_ImplGlfw_Shutdown();
         ImGui::DestroyContext();
     }
+    
+    void ImGuiLayer::onEvent(Event& e) 
+    {
+        if (_blockEvents)
+        {
+            ImGuiIO& io = ImGui::GetIO();
+            bool handled = e.isHandled() | (e.isInCategory(eventCategoryMouse) & io.WantCaptureMouse);
+            e.setHandled(handled);
+
+            handled = e.isHandled() | (e.isInCategory(eventCategoryKeyboard) & io.WantCaptureKeyboard);
+            e.setHandled(handled);
+        }
+    }
 
     void ImGuiLayer::onImGuiRender()
     {

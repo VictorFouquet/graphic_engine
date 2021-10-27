@@ -69,6 +69,12 @@ namespace GraphicEngine
         dispatcher.dispatch<WindowResizeEvent>(BIND_EVENT_FN(OrthographicCameraController::onWindowResized));
     }
     
+    void OrthographicCameraController::onResize(float width, float height) 
+    {
+        _aspectRatio = width / height;
+        _camera.setProjection( -_aspectRatio * _zoomLevel, _aspectRatio * _zoomLevel, -_zoomLevel, _zoomLevel );
+    }
+    
     void OrthographicCameraController::calculateView() 
     {
         _camera.setProjection( -_aspectRatio * _zoomLevel, _aspectRatio * _zoomLevel, -_zoomLevel, _zoomLevel );
@@ -85,8 +91,7 @@ namespace GraphicEngine
     
     bool OrthographicCameraController::onWindowResized(WindowResizeEvent& e) 
     {
-        _aspectRatio = (float)e.getWidth() / (float)e.getHeight();
-        calculateView();
+        onResize((float)e.getWidth(), (float)e.getHeight());
         
         return false;
     }

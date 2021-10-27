@@ -28,12 +28,23 @@ namespace GraphicEngine
 
     void EditorLayer::onUpdate(Timestep timestep)
     {
-        _cameraController.onUpdate(timestep);
+        
+        FrameBufferSpecification spec = _frameBuffer->getSpecification();
+        if (_viewportSize.x > 0.0f && _viewportSize.y > 0.0f && // zero sized framebuffer is invalid
+            (spec.width != _viewportSize.x || spec.height != _viewportSize.y)
+        )
+		{
+			_frameBuffer->resize((uint32_t)_viewportSize.x, (uint32_t)_viewportSize.y);
+			_cameraController.onResize(_viewportSize.x, _viewportSize.y);
+		}
+
+        if (_viewportFocused)
+            _cameraController.onUpdate(timestep);
 
         _frameBuffer->bind();
-
         RenderCommand::setClearColor({ 0.1f, 0.1f, 0.1f, 1.0f });
         RenderCommand::clear();
+
 
         Renderer2D::beginScene(_cameraController.getCamera());
 
@@ -53,11 +64,6 @@ namespace GraphicEngine
         Renderer2D::endScene();
 
         _frameBuffer->unbind();
-    }
-
-    void EditorLayer::onEvent(Event& event) 
-    {
-        _cameraController.onEvent(event);
     }
 
     void EditorLayer::onImGuiRender() 
@@ -81,10 +87,6 @@ namespace GraphicEngine
             window_flags |= ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove;
             window_flags |= ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus;
         }
-        else
-        {
-            dockspace_flags &= ~ImGuiDockNodeFlags_PassthruCentralNode;
-        }
 
         // When using ImGuiDockNodeFlags_PassthruCentralNode, DockSpace() will render our background
         // and handle the pass-thru hole, so we ask Begin() to not render a background.
@@ -96,11 +98,11 @@ namespace GraphicEngine
         // all active windows docked into it will lose their parent and become undocked.
         // We cannot preserve the docking relationship between an active window and an inactive docking, otherwise
         // any change of dockspace/settings would lead to windows being stuck in limbo and never being visible.
-        if (!opt_padding)
-            ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
+
+        ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
         ImGui::Begin("DockSpace Demo", &dockspaceOpen, window_flags);
-        if (!opt_padding)
-            ImGui::PopStyleVar();
+        
+        ImGui::PopStyleVar();
 
         if (opt_fullscreen)
             ImGui::PopStyleVar(2);
@@ -132,15 +134,27 @@ namespace GraphicEngine
 
         ImGui::End();
 
+        
+        ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0,0));
         ImGui::Begin("Viewport");
-            
-        uint32_t textureID = _frameBuffer->getColorAttachmentRendererID();
-        ImGui::Image((void*)textureID, ImVec2( 1280.0f, 720.0f ), ImVec2( 0, 1), ImVec2( 1, 0 ) );
 
+        _viewportFocused = ImGui::IsWindowFocused();
+        Engine::get().getImGuiLayer()->setBlockEvents(!_viewportFocused);
+
+        ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
+        _viewportSize = { viewportPanelSize.x, viewportPanelSize.y };
+
+        uint64_t textureID = _frameBuffer->getColorAttachmentRendererID();
+
+        ImGui::Image(reinterpret_cast<void*>(textureID), ImVec2{ viewportPanelSize.x, viewportPanelSize.y }, ImVec2( 0, 1), ImVec2( 1, 0 ) );
         ImGui::End();
-
+        ImGui::PopStyleVar();
 
         ImGui::End();
     }
 
+    void EditorLayer::onEvent(Event& event) 
+    {
+        _cameraController.onEvent(event);
+    }
 }

@@ -20,11 +20,13 @@ namespace GraphicEngine
         OrthographicCameraController _cameraController;
         Ref<Shader> _shader;
         Ref<FrameBuffer> _frameBuffer;
+        Ref<VertexArray>  _squareVA;
         
         glm::vec4 _lightBlueColor = { 0.5f, 0.6f, 1.0f, 1.0f };
 
         Ref<Texture2D> _texture;
 
-        Ref<VertexArray>  _squareVA;
+        glm::vec2 _viewportSize = { 0.0f, 0.0f };
+        bool _viewportFocused;       
     };
 }

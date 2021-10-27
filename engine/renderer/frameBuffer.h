@@ -16,11 +16,15 @@ namespace GraphicEngine
     class FrameBuffer
     {
     public:
+        virtual ~FrameBuffer() = default;
+
         virtual const FrameBufferSpecification& getSpecification() const = 0;
 
         static Ref<FrameBuffer> create(const FrameBufferSpecification& spec);
 
         virtual uint32_t getColorAttachmentRendererID() const = 0;
+
+        virtual void resize(uint32_t width, uint32_t height) = 0;
 
         virtual void bind() = 0;
         virtual void unbind() = 0;

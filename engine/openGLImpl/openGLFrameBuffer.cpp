@@ -15,10 +15,27 @@ namespace GraphicEngine
     OpenGLFrameBuffer::~OpenGLFrameBuffer() 
     {
         glDeleteFramebuffers(1, &_rendererID);
+        glDeleteTextures(1, &_colorAttachment);
+        glDeleteTextures(1, &_depthAttachment);
+    }
+    
+    void OpenGLFrameBuffer::resize(uint32_t width, uint32_t height) 
+    {
+        _specification.width = width;
+        _specification.height = height;
+
+        invalidate();
     }
     
     void OpenGLFrameBuffer::invalidate() 
     {
+        if (_rendererID)
+        {
+            glDeleteFramebuffers(1, &_rendererID);
+            glDeleteTextures(1, &_colorAttachment);
+            glDeleteTextures(1, &_depthAttachment);
+        }
+
         glCreateFramebuffers(1, &_rendererID);
         glBindFramebuffer(GL_FRAMEBUFFER, _rendererID);
 
@@ -36,8 +53,7 @@ namespace GraphicEngine
         glCreateTextures(GL_TEXTURE_2D, 1, &_depthAttachment);
         glBindTexture(GL_TEXTURE_2D, _depthAttachment);
         glTexStorage2D(GL_TEXTURE_2D, 1, GL_DEPTH24_STENCIL8, _specification.width, _specification.height);
-        // glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH24_STENCIL8, _specification.width, _specification.height, 0,
-        //     GL_DEPTH_STENCIL, GL_UNSIGNED_INT_24_8, NULL);
+
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_TEXTURE_2D, _depthAttachment, 0);
 
         if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
@@ -49,6 +65,7 @@ namespace GraphicEngine
     void OpenGLFrameBuffer::bind() 
     {
         glBindFramebuffer(GL_FRAMEBUFFER, _rendererID);
+        glViewport(0, 0, _specification.width, _specification.height);
     }
     
     void OpenGLFrameBuffer::unbind() 

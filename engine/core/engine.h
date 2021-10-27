@@ -47,6 +47,7 @@ namespace GraphicEngine
         void pushLayer(Layer* layer);
         void pushOverlay(Layer* layer);
 
+        inline ImGuiLayer* getImGuiLayer() { return imGuiLayer; }
         inline static Engine& get() { return *_instance; }
         inline Window& getWindow() { return *window; }
 

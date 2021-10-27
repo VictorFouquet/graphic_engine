@@ -21,10 +21,16 @@ namespace GraphicEngine
         ImGuiLayer();
         void onAttach() override;
         void onDetach() override;
+        
+        void onEvent(Event& e) override;
 
         void onImGuiRender() override;
         
         void begin();
         void end();
+
+        void setBlockEvents(bool block) { _blockEvents = block; }
+    private:
+        bool _blockEvents = true;
     };
 }
