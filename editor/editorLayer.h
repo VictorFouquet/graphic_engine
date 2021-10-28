@@ -25,7 +25,10 @@ namespace GraphicEngine
         
         Ref<Scene> _activeScene;
         Entity _squareEntity;
-        
+        Entity _cameraEntity;
+        Entity _secondCamera;
+        bool _primaryCamera = true;
+
         glm::vec4 _lightBlueColor = { 0.5f, 0.6f, 1.0f, 1.0f };
 
         Ref<Texture2D> _texture;

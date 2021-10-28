@@ -15,6 +15,12 @@ namespace GraphicEngine
         Entity(entt::entity handle, Scene* scene);
         Entity(const Entity& other) = default;
 
+        template<typename T>
+        bool hasComponent()
+        {
+            return _scene->_registry.all_of<T>(_entityHandle);
+        }
+        
         template<typename T, typename... Args>
         T& addComponent(Args&&... args)
         {
@@ -35,12 +41,6 @@ namespace GraphicEngine
             }
 
             return _scene->_registry.get<T>(_entityHandle);
-        }
-
-        template<typename T>
-        bool hasComponent()
-        {
-            return _scene->_registry.any_of<T>(_entityHandle);
         }
 
         template<typename T>

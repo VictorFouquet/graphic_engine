@@ -26,6 +26,14 @@ namespace GraphicEngine
         auto square = _activeScene->createEntity("Green Square");
         square.addComponent<SpriteRendererComponent>(glm::vec4{ 0.0f, 1.0f, 0.0f, 1.0f });
         _squareEntity = square;
+
+        _cameraEntity = _activeScene->createEntity("Scene Camera");
+        _cameraEntity.addComponent<CameraComponent>(glm::ortho(-16.0f, 16.0f, -9.0f, 9.0f, -1.0f, 1.0f));
+
+        _secondCamera = _activeScene->createEntity("Scene Camera 2");
+        auto& cc = _secondCamera.addComponent<CameraComponent>(glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f, -1.0f, 1.0f));
+        
+        cc._primary = false;
     }
 
     void EditorLayer::onDetach() 
@@ -53,9 +61,9 @@ namespace GraphicEngine
         RenderCommand::setClearColor({ 0.1f, 0.1f, 0.1f, 1.0f });
         RenderCommand::clear();
 
-        Renderer2D::beginScene(_cameraController.getCamera());
+        // Renderer2D::beginScene(_cameraController.getCamera());
         _activeScene->onUpdate(timestep);
-        Renderer2D::endScene();
+        // Renderer2D::endScene();
 
         _frameBuffer->unbind();
     }
@@ -128,7 +136,15 @@ namespace GraphicEngine
             ImGui::Text("%s", _squareEntity.getComponent<TagComponent>()._tag.c_str());
             auto& squareColor = _squareEntity.getComponent<SpriteRendererComponent>()._color;
             ImGui::ColorEdit3("Color", glm::value_ptr(squareColor));
-        }        
+            ImGui::Separator();
+        }
+        ImGui::DragFloat3("Camera Transform", glm::value_ptr(_cameraEntity.getComponent<TransformComponent>()._transform[3]));
+
+        if (ImGui::Checkbox("Scene Camera 1", &_primaryCamera))
+        {
+            _cameraEntity.getComponent<CameraComponent>()._primary = _primaryCamera;
+            _secondCamera.getComponent<CameraComponent>()._primary = !_primaryCamera;
+        }
 
         ImGui::End();
 

@@ -110,6 +110,20 @@ namespace GraphicEngine
 
     }
     
+    void Renderer2D::beginScene(const Camera& camera, const glm::mat4& transform) 
+    {
+        glm::mat4 viewProj = camera.getProjection() * glm::inverse(transform);
+
+        _data.quadIndexCount = 0;
+
+        _data.textureShader->bind();
+        _data.textureShader->setMat4("u_ViewProjection", viewProj);
+
+        _data.quadVertexBufferPtr = _data.quadVertexBufferBase;
+
+        _data.textureSlotIndex = 1;
+    }
+    
     void Renderer2D::beginScene(const OrthographicCamera& camera) 
     {
         _data.quadIndexCount = 0;

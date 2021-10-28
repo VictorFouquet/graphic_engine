@@ -1,9 +1,21 @@
 #pragma once
 
 #include "glm/glm.hpp"
+#include "camera.h"
+
 
 namespace GraphicEngine
 {
+
+    struct TagComponent
+    {
+        std::string _tag;
+
+        TagComponent() = default;
+        TagComponent(const TagComponent&) = default;
+        TagComponent(const std::string& tag)
+            : _tag(tag) {}
+    };
 
     struct MeshComponent
     {
@@ -17,7 +29,7 @@ namespace GraphicEngine
 
         TransformComponent() = default;
         TransformComponent(const TransformComponent&) = default;
-        TransformComponent(const glm::mat4 transform)
+        TransformComponent(const glm::mat4& transform)
             : _transform(transform) {}
         
         // operator glm::mat4&() { return _transform; }
@@ -30,21 +42,22 @@ namespace GraphicEngine
 
         SpriteRendererComponent() = default;
         SpriteRendererComponent(const SpriteRendererComponent&) = default;
-        SpriteRendererComponent(const glm::vec4 color)
+        SpriteRendererComponent(const glm::vec4& color)
             : _color(color) {}
         
         operator glm::vec4&() { return _color; }
         operator const glm::vec4&() { return _color; }
     };
-
-    struct TagComponent
+    
+    struct CameraComponent
     {
-        std::string _tag;
+        Camera _camera;
+        bool _primary = true;
 
-        TagComponent() = default;
-        TagComponent(const TagComponent&) = default;
-        TagComponent(const std::string& tag)
-            : _tag(tag) {}
+        CameraComponent() = default;
+        CameraComponent(const CameraComponent&) = default;
+        CameraComponent(const glm::mat4& projection)
+            : _camera(projection) {}
     };
 
 }
