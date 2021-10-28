@@ -34,6 +34,38 @@ namespace GraphicEngine
         auto& cc = _secondCamera.addComponent<CameraComponent>();
 
         cc._primary = false;
+
+        
+        class CameraController : public ScriptableEntity
+        {
+        public:
+            void onCreate()
+            {
+
+            }
+
+            void onUpdate(Timestep ts)
+            {
+                auto& transform = getComponent<TransformComponent>()._transform;
+                float speed = 5.0f;
+
+                if (Input::isKeyPressed(65))      // AZERTY Q - Move Left
+                    transform[3][0] -= speed * ts;
+                else if (Input::isKeyPressed(68)) // AZERTY D - Move Right
+                    transform[3][0] += speed * ts;
+                if (Input::isKeyPressed(87))      // AZERTY Z - Move Up
+                    transform[3][1] += speed * ts;
+                else if (Input::isKeyPressed(83)) // AZERTY S - Move Down
+                    transform[3][1] -= speed * ts;
+            }
+
+            void onDestroy()
+            {
+
+            }
+        };
+
+        _secondCamera.addComponent<NativeScriptComponent>().bind<CameraController>();
     }
 
     void EditorLayer::onDetach() 
@@ -147,7 +179,7 @@ namespace GraphicEngine
             auto& camera = _secondCamera.getComponent<CameraComponent>()._camera;
             float orthoSize = camera.getOrthographicSize();
 
-            if (ImGui::DragFloat("Second Camera Ortho Size", &orthoSize))
+            if (ImGui::DragFloat("Second Camera Ortho Size", &orthoSize, 0.1f, 0.001f, 100.0f))
                 camera.setOrthographicSize(orthoSize);
         }
 

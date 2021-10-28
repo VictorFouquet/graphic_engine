@@ -38,6 +38,21 @@ namespace GraphicEngine
     
     void Scene::onUpdate(Timestep ts) 
     {
+        // Updates scripts
+        {
+            _registry.view<NativeScriptComponent>().each([=](auto entity, auto& nativeScriptComponent)
+            {
+                if (!nativeScriptComponent._instance)
+                {
+                    nativeScriptComponent.instantiateFunction();
+                    nativeScriptComponent._instance->_entity = Entity{ entity, this };
+                    nativeScriptComponent.onCreateFunction(nativeScriptComponent._instance);
+                }
+
+                nativeScriptComponent.onUpdateFunction(nativeScriptComponent._instance, ts);
+            });
+        }
+
         // Renders 2D sprites
         Camera* mainCamera = nullptr;
         glm::mat4* mainCameraTransform = nullptr;
