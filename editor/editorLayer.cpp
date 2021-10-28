@@ -28,11 +28,11 @@ namespace GraphicEngine
         _squareEntity = square;
 
         _cameraEntity = _activeScene->createEntity("Scene Camera");
-        _cameraEntity.addComponent<CameraComponent>(glm::ortho(-16.0f, 16.0f, -9.0f, 9.0f, -1.0f, 1.0f));
+        _cameraEntity.addComponent<CameraComponent>();
 
         _secondCamera = _activeScene->createEntity("Scene Camera 2");
-        auto& cc = _secondCamera.addComponent<CameraComponent>(glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f, -1.0f, 1.0f));
-        
+        auto& cc = _secondCamera.addComponent<CameraComponent>();
+
         cc._primary = false;
     }
 
@@ -51,6 +51,7 @@ namespace GraphicEngine
 		{
 			_frameBuffer->resize((uint32_t)_viewportSize.x, (uint32_t)_viewportSize.y);
 			_cameraController.onResize(_viewportSize.x, _viewportSize.y);
+            _activeScene->onViewportResize((uint32_t)_viewportSize.x, (uint32_t)_viewportSize.y);
 		}
 
         if (_viewportFocused)
@@ -60,11 +61,7 @@ namespace GraphicEngine
         _frameBuffer->bind();
         RenderCommand::setClearColor({ 0.1f, 0.1f, 0.1f, 1.0f });
         RenderCommand::clear();
-
-        // Renderer2D::beginScene(_cameraController.getCamera());
         _activeScene->onUpdate(timestep);
-        // Renderer2D::endScene();
-
         _frameBuffer->unbind();
     }
 
@@ -146,6 +143,15 @@ namespace GraphicEngine
             _secondCamera.getComponent<CameraComponent>()._primary = !_primaryCamera;
         }
 
+        {
+            auto& camera = _secondCamera.getComponent<CameraComponent>()._camera;
+            float orthoSize = camera.getOrthographicSize();
+
+            if (ImGui::DragFloat("Second Camera Ortho Size", &orthoSize))
+                camera.setOrthographicSize(orthoSize);
+        }
+
+        ImGui::Separator();
         ImGui::End();
 
         

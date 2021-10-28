@@ -4,6 +4,7 @@
 #include "component.h"
 #include "renderer2D.h"
 #include "entity.h"
+#include "sceneCamera.h"
 
 namespace GraphicEngine
 {
@@ -70,6 +71,22 @@ namespace GraphicEngine
             Renderer2D::endScene();
         }
 
+    }
+    
+    void Scene::onViewportResize(uint32_t width, uint32_t height) 
+    {
+        _viewportWidth = width;
+        _viewportHeight = height;
+
+        auto view = _registry.view<CameraComponent>();
+        for (auto entity : view)
+        {
+            auto& cameraComponent = view.get<CameraComponent>(entity);
+            if (!cameraComponent._fixedAspectRation)
+            {
+                cameraComponent._camera.setViewportSize(width, height);
+            }
+        }
     }
 
 }
