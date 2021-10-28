@@ -2,6 +2,7 @@
 #include "glm/gtc/type_ptr.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 #include "core.h"
+#include "component.h"
 
 namespace GraphicEngine
 {
@@ -19,6 +20,12 @@ namespace GraphicEngine
         fbSpec.width = 1280;
         fbSpec.height = 720;
         _frameBuffer = FrameBuffer::create(fbSpec);
+
+        _activeScene = CreateRef<Scene>();
+
+        auto square = _activeScene->createEntity("Green Square");
+        square.addComponent<SpriteRendererComponent>(glm::vec4{ 0.0f, 1.0f, 0.0f, 1.0f });
+        _squareEntity = square;
     }
 
     void EditorLayer::onDetach() 
@@ -41,26 +48,13 @@ namespace GraphicEngine
         if (_viewportFocused)
             _cameraController.onUpdate(timestep);
 
+
         _frameBuffer->bind();
         RenderCommand::setClearColor({ 0.1f, 0.1f, 0.1f, 1.0f });
         RenderCommand::clear();
 
-
         Renderer2D::beginScene(_cameraController.getCamera());
-
-        static float rotation1 = 0.0f;
-        rotation1 += timestep * 20.0f;
-
-        static float rotation2 = 0.0f;
-        rotation2 -= timestep * 40.0f;
-        // Draws quad with flat color
-        Renderer2D::drawQuad({ -1.0f,  0.0f },  { 0.8f,  0.8f }, { 0.8f, 0.2f, 0.3f, 1.0f });
-        Renderer2D::drawRotatedQuad({  0.5f, -0.5f }, rotation1, { 0.5f, 0.75f }, { 0.2f, 0.3f, 0.8f, 1.0f });
-
-        // Draws textured quads
-        Renderer2D::drawQuad({ 0.0f, 0.0f, -0.1f }, { 10.0f, 10.0f }, _texture, 10, _lightBlueColor);
-        Renderer2D::drawRotatedQuad({ 0.0f, 0.0f, 0.0f }, rotation2, { 1.0f, 1.0f }, _texture, 20);
-
+        _activeScene->onUpdate(timestep);
         Renderer2D::endScene();
 
         _frameBuffer->unbind();
@@ -129,8 +123,12 @@ namespace GraphicEngine
         }
 
         ImGui::Begin("Settings");
-            
-        ImGui::ColorEdit3("Color", glm::value_ptr(_lightBlueColor));
+        if (_squareEntity)
+        {
+            ImGui::Text("%s", _squareEntity.getComponent<TagComponent>()._tag.c_str());
+            auto& squareColor = _squareEntity.getComponent<SpriteRendererComponent>()._color;
+            ImGui::ColorEdit3("Color", glm::value_ptr(squareColor));
+        }        
 
         ImGui::End();
 

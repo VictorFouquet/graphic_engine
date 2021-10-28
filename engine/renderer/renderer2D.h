@@ -18,6 +18,8 @@ namespace GraphicEngine
         static void flush();
 
         // Draw quads
+        static void drawQuad(const glm::mat4& transform, const glm::vec4& color);
+        static void drawQuad(const glm::mat4& transform, const Ref<Texture>& texture, float tiling = 1.0f, glm::vec4 tint = glm::vec4(1.0f));
 
         // Flat color quads
         static void drawQuad(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color);

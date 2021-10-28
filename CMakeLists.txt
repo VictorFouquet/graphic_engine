@@ -2,6 +2,10 @@ cmake_minimum_required(VERSION 3.15)
 
 project(GraphicEngine VERSION 0.0.1)
 
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
 # add_compile_definitions(RUNTIME_DEMO=true)
 # add_compile_definitions(TILE_DEMO=true)
 add_compile_definitions(EDITOR_MODE=true)

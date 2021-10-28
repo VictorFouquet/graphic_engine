@@ -1,5 +1,6 @@
 #pragma once
 #include "engine.h"
+#include "entity.h"
 
 namespace GraphicEngine
 {
@@ -21,6 +22,9 @@ namespace GraphicEngine
         Ref<Shader> _shader;
         Ref<FrameBuffer> _frameBuffer;
         Ref<VertexArray>  _squareVA;
+        
+        Ref<Scene> _activeScene;
+        Entity _squareEntity;
         
         glm::vec4 _lightBlueColor = { 0.5f, 0.6f, 1.0f, 1.0f };
 

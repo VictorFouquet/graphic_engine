@@ -23,7 +23,9 @@ target_link_libraries(engine
     precompiledHeaders
     glfw
     glm
+    entt
     openGLImpl
     imGuiImpl
     renderer
+    scene
 )
