@@ -18,6 +18,7 @@ namespace GraphicEngine
         void onImGuiRender();
     private:
         void drawEntityNode(Entity entity);
+        void drawComponents(Entity entity);
     private:
         Ref<Scene> _context;
         Entity _selectionContext;
