@@ -46,5 +46,20 @@ namespace GraphicEngine
         static void drawRotatedQuad(const glm::vec3& position, const float rotation, const glm::vec2& size,
             const Ref<Texture>& texture, float tiling = 1.0f, glm::vec4 tint = glm::vec4(1.0f));
 
+        // Statistics
+        struct Statistics
+        {
+            uint32_t drawCalls = 0;
+            uint32_t quadCount = 0;
+
+            uint32_t getTotalVertexCount() { return quadCount * 4; }
+            uint32_t getTotalIndexCount() { return quadCount * 6; }
+        };
+
+        static void resetStats();
+        static Statistics getStats();
+    
+    private:
+        static void flushAndReset();
     };
 }

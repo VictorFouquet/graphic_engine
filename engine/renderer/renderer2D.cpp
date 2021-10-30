@@ -24,9 +24,9 @@ namespace GraphicEngine
 
     struct Renderer2DData
     {
-        const uint32_t maxQuads = 10000;
-        const uint32_t maxVertices = maxQuads * 4;
-        const uint32_t maxIndices = maxQuads * 6;
+        static const uint32_t maxQuads = 10000;
+        static const uint32_t maxVertices = maxQuads * 4;
+        static const uint32_t maxIndices = maxQuads * 6;
         static const uint32_t maxTextureSlots = 32;
 
         Ref<VertexArray> quadVertexArray;
@@ -42,6 +42,8 @@ namespace GraphicEngine
         uint32_t textureSlotIndex = 1; // 0 is white texture
 
         glm::vec4 quadVertexPositions[4];
+
+        Renderer2D::Statistics stats;
     };
 
     static Renderer2DData _data;
@@ -152,11 +154,23 @@ namespace GraphicEngine
         }
 
         RenderCommand::drawIndexed(_data.quadVertexArray, _data.quadIndexCount);
+        _data.stats.drawCalls ++;
     }
     
+    void Renderer2D::flushAndReset()
+    {
+        endScene();
+
+        _data.quadIndexCount = 0;
+        _data.quadVertexBufferPtr = _data.quadVertexBufferBase;
+        _data.textureSlotIndex = 1;
+    }
 
     void Renderer2D::drawQuad(const glm::mat4& transform, const glm::vec4& color)
     {
+        if (_data.quadIndexCount >= _data.maxIndices)
+            flushAndReset();
+
         glm::vec2 texCoord[] = { { 0.0f, 0.0f }, { 1.0f, 0.0f }, { 1.0f, 1.0f }, { 0.0f, 1.0f }};
 
         const float textureIndex = 0.0f;
@@ -173,10 +187,14 @@ namespace GraphicEngine
         }
 
         _data.quadIndexCount += 6;
+        _data.stats.quadCount ++;
     }
 
     void Renderer2D::drawQuad(const glm::mat4& transform, const Ref<Texture>& texture, float tiling, glm::vec4 tint) 
     {
+        if (_data.quadIndexCount >= _data.maxIndices)
+            flushAndReset();
+
         glm::vec2 texCoord[] = { { 0.0f, 0.0f }, { 1.0f, 0.0f }, { 1.0f, 1.0f }, { 0.0f, 1.0f }};
 
         float textureIndex = 0.0f;
@@ -207,6 +225,7 @@ namespace GraphicEngine
         }
 
         _data.quadIndexCount += 6;
+        _data.stats.quadCount ++;
     }
       //-------------------------------+
      //             FLAT COLOR QUAD   /
@@ -227,18 +246,6 @@ namespace GraphicEngine
                               glm::scale(glm::mat4(1.0f), { size.x, size.y, 1.0f });
 
         drawQuad(transform, color);
-
-        // for (int i = 0; i < 4; i++) {
-        //     _data.quadVertexBufferPtr->position = transform * _data.quadVertexPositions[i];
-        //     _data.quadVertexBufferPtr->color = color;
-        //     _data.quadVertexBufferPtr->textureCoord = texCoord[i];
-        //     _data.quadVertexBufferPtr->textureIndex = textureIndex;
-        //     _data.quadVertexBufferPtr->tilingFactor = tilingFactor;
-
-        //     _data.quadVertexBufferPtr++;
-        // }
-
-        // _data.quadIndexCount += 6;
     }
       //-------------------------------+
      //               TEXTURED QUAD   /
@@ -276,18 +283,6 @@ namespace GraphicEngine
                               glm::scale(glm::mat4(1.0f), { size.x, size.y, 1.0f });
 
         drawQuad(transform, texture, tiling, tint);
-        
-        // for (int i = 0; i < 4; i++) {
-        //     _data.quadVertexBufferPtr->position = transform * _data.quadVertexPositions[i];
-        //     _data.quadVertexBufferPtr->color = tint;
-        //     _data.quadVertexBufferPtr->textureCoord = texCoord[i];
-        //     _data.quadVertexBufferPtr->textureIndex = textureIndex;
-        //     _data.quadVertexBufferPtr->tilingFactor = tiling;
-
-        //     _data.quadVertexBufferPtr++;
-        // }
-
-        // _data.quadIndexCount += 6;
     }
 
       //-------------------------------+
@@ -303,6 +298,9 @@ namespace GraphicEngine
     void Renderer2D::drawQuad(const glm::vec3& position, const glm::vec2& size,
                             const Ref<SubTexture2D>& subTexture, float tiling, glm::vec4 tint) 
     {
+        if (_data.quadIndexCount >= _data.maxIndices)
+            flushAndReset();
+
         const glm::vec2* texCoord = subTexture->getTexCoords();
         const Ref<Texture> texture = subTexture->getTexture();
 
@@ -337,6 +335,7 @@ namespace GraphicEngine
         }
 
         _data.quadIndexCount += 6;
+        _data.stats.quadCount ++;
     }
       //-------------------------------+
      //           ROTATED QUAD -FLAT  /
@@ -348,6 +347,9 @@ namespace GraphicEngine
     
     void Renderer2D::drawRotatedQuad(const glm::vec3& position, const float rotation, const glm::vec2& size, const glm::vec4& color) 
     {
+        if (_data.quadIndexCount >= _data.maxIndices)
+            flushAndReset();
+
         glm::vec2 texCoord[] = { { 0.0f, 0.0f }, { 1.0f, 0.0f }, { 1.0f, 1.0f }, { 0.0f, 1.0f }};
 
         const float textureIndex = 0.0f;
@@ -368,6 +370,7 @@ namespace GraphicEngine
         }
 
         _data.quadIndexCount += 6;
+        _data.stats.quadCount ++;
     }
       //-------------------------------+
      //        ROTATED QUAD -TEXTURE  /
@@ -381,6 +384,9 @@ namespace GraphicEngine
     void Renderer2D::drawRotatedQuad(const glm::vec3& position, const float rotation, const glm::vec2& size,
                                     const Ref<Texture>& texture, float tiling, glm::vec4 tint) 
     {
+        if (_data.quadIndexCount >= _data.maxIndices)
+            flushAndReset();
+
         glm::vec2 texCoord[] = { { 0.0f, 0.0f }, { 1.0f, 0.0f }, { 1.0f, 1.0f }, { 0.0f, 1.0f }};
 
         float textureIndex = 0.0f;
@@ -415,6 +421,18 @@ namespace GraphicEngine
         }
 
         _data.quadIndexCount += 6;
+        _data.stats.quadCount ++;
+    }
+
+
+    void Renderer2D::resetStats()
+    {
+        memset(&_data.stats, 0, sizeof(Statistics));
+    }
+
+    Renderer2D::Statistics Renderer2D::getStats()
+    {
+        return _data.stats;
     }
 
 }

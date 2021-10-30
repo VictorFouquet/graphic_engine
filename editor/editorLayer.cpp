@@ -27,16 +27,15 @@ namespace GraphicEngine
 
         auto square = _activeScene->createEntity("Green Square");
         square.addComponent<SpriteRendererComponent>(glm::vec4{ 0.0f, 1.0f, 0.0f, 1.0f });
-        _squareEntity = square;
 
         auto redSquare = _activeScene->createEntity("Red Square");
         redSquare.addComponent<SpriteRendererComponent>(glm::vec4{ 1.0f, 0.0f, 0.0f, 1.0f });
-        
-        _cameraEntity = _activeScene->createEntity("Scene Camera");
-        _cameraEntity.addComponent<CameraComponent>();
 
-        _secondCamera = _activeScene->createEntity("Scene Camera 2");
-        auto& cc = _secondCamera.addComponent<CameraComponent>();
+        auto cameraEntity = _activeScene->createEntity("Scene Camera");
+        cameraEntity.addComponent<CameraComponent>();
+
+        auto secondCamera = _activeScene->createEntity("Scene Camera 2");
+        auto& cc = secondCamera.addComponent<CameraComponent>();
 
         cc._primary = false;
 
@@ -70,7 +69,7 @@ namespace GraphicEngine
             }
         };
 
-        _secondCamera.addComponent<NativeScriptComponent>().bind<CameraController>();
+        secondCamera.addComponent<NativeScriptComponent>().bind<CameraController>();
 
         _sceneHierarchyPanel.setContext(_activeScene);
     }
@@ -82,7 +81,8 @@ namespace GraphicEngine
 
     void EditorLayer::onUpdate(Timestep timestep)
     {
-        
+        Renderer2D::resetStats();
+
         FrameBufferSpecification spec = _frameBuffer->getSpecification();
         if (_viewportSize.x > 0.0f && _viewportSize.y > 0.0f && // zero sized framebuffer is invalid
             (spec.width != _viewportSize.x || spec.height != _viewportSize.y)
@@ -168,31 +168,14 @@ namespace GraphicEngine
 
         _sceneHierarchyPanel.onImGuiRender();
         
-        ImGui::Begin("Settings");
-        if (_squareEntity)
-        {
-            ImGui::Text("%s", _squareEntity.getComponent<TagComponent>()._tag.c_str());
-            auto& squareColor = _squareEntity.getComponent<SpriteRendererComponent>()._color;
-            ImGui::ColorEdit3("Color", glm::value_ptr(squareColor));
-            ImGui::Separator();
-        }
-        ImGui::DragFloat3("Camera Transform", glm::value_ptr(_cameraEntity.getComponent<TransformComponent>()._transform[3]));
+        ImGui::Begin("Renderer2D Stats");
 
-        if (ImGui::Checkbox("Scene Camera 1", &_primaryCamera))
-        {
-            _cameraEntity.getComponent<CameraComponent>()._primary = _primaryCamera;
-            _secondCamera.getComponent<CameraComponent>()._primary = !_primaryCamera;
-        }
+        auto stats = Renderer2D::getStats();
+        ImGui::Text("Draw calls: %d", stats.drawCalls);
+        ImGui::Text("Quad: %d", stats.quadCount);
+        ImGui::Text("Vertices: %d", stats.getTotalVertexCount());
+        ImGui::Text("Indices: %d", stats.getTotalIndexCount());
 
-        {
-            auto& camera = _secondCamera.getComponent<CameraComponent>()._camera;
-            float orthoSize = camera.getOrthographicSize();
-
-            if (ImGui::DragFloat("Second Camera Ortho Size", &orthoSize, 0.1f, 0.001f, 100.0f))
-                camera.setOrthographicSize(orthoSize);
-        }
-
-        ImGui::Separator();
         ImGui::End();
 
         

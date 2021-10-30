@@ -90,10 +90,10 @@ namespace GraphicEngine
 
         if (entity.hasComponent<SpriteRendererComponent>())
         {
-            if (ImGui::TreeNodeEx((void*)typeid(SpriteRendererComponent).hash_code(), ImGuiTreeNodeFlags_DefaultOpen, "Texture"))
+            if (ImGui::TreeNodeEx((void*)typeid(SpriteRendererComponent).hash_code(), ImGuiTreeNodeFlags_DefaultOpen, "Sprite Renderer"))
             {
-                auto& color = entity.getComponent<SpriteRendererComponent>()._color;
-                ImGui::ColorEdit3("Color", glm::value_ptr(color));
+                auto& src = entity.getComponent<SpriteRendererComponent>();
+                ImGui::ColorEdit4("Color", glm::value_ptr(src._color));
                 
                 ImGui::TreePop();
             }
