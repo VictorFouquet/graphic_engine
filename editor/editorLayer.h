@@ -1,6 +1,7 @@
 #pragma once
 #include "engine.h"
 #include "entity.h"
+#include "sceneHierarchyPanel.h"
 
 namespace GraphicEngine
 {
@@ -34,6 +35,8 @@ namespace GraphicEngine
         Ref<Texture2D> _texture;
 
         glm::vec2 _viewportSize = { 0.0f, 0.0f };
-        bool _viewportFocused;       
+        bool _viewportFocused;
+
+        SceneHierarchyPanel _sceneHierarchyPanel;
     };
 }

@@ -1,6 +1,8 @@
 #include "editorLayer.h"
+
 #include "glm/gtc/type_ptr.hpp"
 #include "glm/gtc/matrix_transform.hpp"
+
 #include "core.h"
 #include "component.h"
 
@@ -66,6 +68,8 @@ namespace GraphicEngine
         };
 
         _secondCamera.addComponent<NativeScriptComponent>().bind<CameraController>();
+
+        _sceneHierarchyPanel.setContext(_activeScene);
     }
 
     void EditorLayer::onDetach() 
@@ -159,6 +163,8 @@ namespace GraphicEngine
             ImGui::EndMenuBar();
         }
 
+        _sceneHierarchyPanel.onImGuiRender();
+        
         ImGui::Begin("Settings");
         if (_squareEntity)
         {

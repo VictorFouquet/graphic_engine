@@ -20,7 +20,9 @@ namespace GraphicEngine
     private:
         entt::registry _registry;
         uint32_t _viewportWidth = 0, _viewportHeight = 0;
+        
         friend class Entity;
+        friend class SceneHierarchyPanel;
     };
 
 }

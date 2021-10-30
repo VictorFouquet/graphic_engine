@@ -15,6 +15,8 @@ namespace GraphicEngine
         Entity(entt::entity handle, Scene* scene);
         Entity(const Entity& other) = default;
 
+        entt::entity getHandle() { return _entityHandle; }
+
         template<typename T>
         bool hasComponent()
         {
@@ -55,6 +57,16 @@ namespace GraphicEngine
         }
 
         operator bool() { return (uint32_t)_entityHandle != entt::null; }
+
+        bool operator ==(const Entity& other) const
+        { 
+            return _entityHandle == other._entityHandle && _scene == other._scene;
+        }
+
+        bool operator !=(const Entity& other) const
+        { 
+            return !(*this == other);
+        }
     private:
         entt::entity _entityHandle{ entt::null };
         Scene* _scene = nullptr;
