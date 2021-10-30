@@ -97,7 +97,7 @@ namespace GraphicEngine
         for (auto entity : view)
         {
             auto& cameraComponent = view.get<CameraComponent>(entity);
-            if (!cameraComponent._fixedAspectRation)
+            if (!cameraComponent._fixedAspectRatio)
             {
                 cameraComponent._camera.setViewportSize(width, height);
             }

@@ -29,6 +29,9 @@ namespace GraphicEngine
         square.addComponent<SpriteRendererComponent>(glm::vec4{ 0.0f, 1.0f, 0.0f, 1.0f });
         _squareEntity = square;
 
+        auto redSquare = _activeScene->createEntity("Red Square");
+        redSquare.addComponent<SpriteRendererComponent>(glm::vec4{ 1.0f, 0.0f, 0.0f, 1.0f });
+        
         _cameraEntity = _activeScene->createEntity("Scene Camera");
         _cameraEntity.addComponent<CameraComponent>();
 

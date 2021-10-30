@@ -53,7 +53,7 @@ namespace GraphicEngine
     {
         SceneCamera _camera;
         bool _primary = true;
-        bool _fixedAspectRation = false;
+        bool _fixedAspectRatio = false;
         
         CameraComponent() = default;
         CameraComponent(const CameraComponent&) = default;
