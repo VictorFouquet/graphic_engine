@@ -58,7 +58,8 @@ namespace GraphicEngine
 
         static void resetStats();
         static Statistics getStats();
-    
+
+        static std::vector<std::vector<glm::vec3>> getQuadsVerticesCoordinates();
     private:
         static void flushAndReset();
     };

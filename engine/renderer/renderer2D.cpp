@@ -44,6 +44,8 @@ namespace GraphicEngine
         glm::vec4 quadVertexPositions[4];
 
         Renderer2D::Statistics stats;
+
+        std::vector<std::vector<glm::vec3>> quadsVerticesCoordinates;
     };
 
     static Renderer2DData _data;
@@ -124,6 +126,8 @@ namespace GraphicEngine
         _data.quadVertexBufferPtr = _data.quadVertexBufferBase;
 
         _data.textureSlotIndex = 1;
+
+        _data.quadsVerticesCoordinates.clear();
     }
     
     void Renderer2D::beginScene(const OrthographicCamera& camera) 
@@ -136,6 +140,8 @@ namespace GraphicEngine
         _data.quadVertexBufferPtr = _data.quadVertexBufferBase;
 
         _data.textureSlotIndex = 1;
+
+        _data.quadsVerticesCoordinates.clear();
     }
     
     void Renderer2D::endScene() 
@@ -175,9 +181,16 @@ namespace GraphicEngine
 
         const float textureIndex = 0.0f;
         const float tilingFactor = 1.0f;
-
+        std::vector<glm::vec3> coords;
         for (int i = 0; i < 4; i++) {
             _data.quadVertexBufferPtr->position = transform * _data.quadVertexPositions[i];
+            
+            coords.push_back(glm::vec3(
+                _data.quadVertexBufferPtr->position.x,
+                _data.quadVertexBufferPtr->position.y,
+                _data.quadVertexBufferPtr->position.z
+            ));
+
             _data.quadVertexBufferPtr->color = color;
             _data.quadVertexBufferPtr->textureCoord = texCoord[i];
             _data.quadVertexBufferPtr->textureIndex = textureIndex;
@@ -185,7 +198,7 @@ namespace GraphicEngine
 
             _data.quadVertexBufferPtr++;
         }
-
+        _data.quadsVerticesCoordinates.push_back(coords);
         _data.quadIndexCount += 6;
         _data.stats.quadCount ++;
     }
@@ -435,4 +448,26 @@ namespace GraphicEngine
         return _data.stats;
     }
 
+
+    std::vector<std::vector<glm::vec3>> Renderer2D::getQuadsVerticesCoordinates()
+    {
+        int i = 1;
+        if (_data.quadsVerticesCoordinates.size())
+        {
+            for (const auto& squares : _data.quadsVerticesCoordinates)
+            {
+                std::cout << "Square " << i << std::endl;
+
+                for (const auto& coords : squares)
+                {
+                    std::cout << "(" << coords.x << ", " << coords.y << ")" << std::endl;
+                }
+
+                i++;
+            }
+            std::cout << "\n" << std::endl;
+        }
+        
+        return _data.quadsVerticesCoordinates;
+    }
 }

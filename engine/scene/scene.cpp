@@ -91,9 +91,12 @@ namespace GraphicEngine
                     Renderer2D::drawQuad(transform.getTransform(), sprite._color);
                 }
 
+                Renderer2D::getQuadsVerticesCoordinates();
+                
                 Renderer2D::endScene();
             }
         }
+
 
     }
     
