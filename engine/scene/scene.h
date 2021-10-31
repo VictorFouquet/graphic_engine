@@ -13,10 +13,15 @@ namespace GraphicEngine
         ~Scene();
 
         Entity createEntity(const std::string& name = std::string());
+        void destroyEntity(Entity entity);
+        
         auto& reg() { return _registry; }
 
         void onUpdate(Timestep ts);
         void onViewportResize(uint32_t width, uint32_t height);
+    private:
+        template<typename T>
+        void onComponentAdded(Entity entity, T& component);
     private:
         entt::registry _registry;
         uint32_t _viewportWidth = 0, _viewportHeight = 0;

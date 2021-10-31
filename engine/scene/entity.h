@@ -30,8 +30,10 @@ namespace GraphicEngine
             {
                 std::cout << "Entity already has component" << std::endl;
             }
+            T& component = _scene->_registry.emplace<T>(_entityHandle, std::forward<Args>(args)...);
+            _scene->onComponentAdded<T>(*this, component);
 
-            return _scene->_registry.emplace<T>(_entityHandle, std::forward<Args>(args)...);
+            return component;
         }
 
         template<typename T>
