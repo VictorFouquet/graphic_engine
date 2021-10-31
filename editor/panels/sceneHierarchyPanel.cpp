@@ -1,6 +1,7 @@
 #include "sceneHierarchyPanel.h"
 
 #include "imgui.h"
+#include "imgui_internal.h"
 #include "glm/gtc/type_ptr.hpp"
 
 namespace GraphicEngine
@@ -60,6 +61,69 @@ namespace GraphicEngine
 
     }
     
+    static void drawVec3Control(const std::string& label, glm::vec3& values,
+        float resetValue = 0.0f, float minValue = -10000.0f, float columnWidth = 100.0f)
+    {
+        ImGui::PushID(label.c_str());
+
+        ImGui::Columns(2);
+        ImGui::SetColumnWidth(0, columnWidth);
+        ImGui::Text(label.c_str());
+        ImGui::NextColumn();
+
+        ImGui::PushMultiItemsWidths(3, ImGui::CalcItemWidth());
+        ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 0, 0 });
+
+        float lineHeight = GImGui->Font->FontSize + GImGui->Style.FramePadding.y * 2.0f;
+        ImVec2 buttonSize = { lineHeight + 3.0f, lineHeight };
+
+        ImGui::PushStyleColor(ImGuiCol_Button, ImVec4{ 0.735f, 0.213f, 0.213f, 1.0f});
+        ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4{ 0.835f, 0.313f, 0.313f, 1.0f});
+        ImGui::PushStyleColor(ImGuiCol_Button, ImVec4{ 0.735f, 0.213f, 0.213f, 1.0f});
+
+        if (ImGui::Button("X", buttonSize))
+            values[0] = resetValue;
+        ImGui::SameLine();
+        ImGui::DragFloat("##X", &values.x, 0.1f, minValue, 10000.0f);
+        ImGui::PopItemWidth();
+        ImGui::SameLine();
+
+        ImGui::PopStyleColor(3);
+
+
+        ImGui::PushStyleColor(ImGuiCol_Button, ImVec4{ 0.2f, 0.7f, 0.2f, 1.0f});
+        ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4{ 0.3f, 0.8f, 0.3f, 1.0f});
+        ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4{ 0.2f, 0.7f, 0.2f, 1.0f});
+
+        if (ImGui::Button("Y", buttonSize))
+            values[1] = resetValue;
+        ImGui::SameLine();
+        ImGui::DragFloat("##Y", &values.y, 0.1f, minValue, 10000.0f);
+        ImGui::PopItemWidth();
+        ImGui::SameLine();
+
+        ImGui::PopStyleColor(3);
+
+
+        ImGui::PushStyleColor(ImGuiCol_Button, ImVec4{ 0.1f, 0.25f, 0.8f, 1.0f});
+        ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4{ 0.2f, 0.35f, 0.9f, 1.0f});
+        ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4{ 0.1f, 0.25f, 0.8f, 1.0f});
+
+        if (ImGui::Button("Z", buttonSize))
+            values[2] = resetValue;
+        ImGui::SameLine();
+        ImGui::DragFloat("##Z", &values.z, 0.1f, minValue, 10000.0f);
+        ImGui::PopItemWidth();
+
+        ImGui::PopStyleColor(3);
+
+        ImGui::PopStyleVar();
+
+        ImGui::Columns(1);
+
+        ImGui::PopID();
+    }
+
     void SceneHierarchyPanel::drawComponents(Entity entity) 
     {
         if (entity.hasComponent<TagComponent>())
@@ -80,10 +144,15 @@ namespace GraphicEngine
         {
             if (ImGui::TreeNodeEx((void*)typeid(TransformComponent).hash_code(), ImGuiTreeNodeFlags_DefaultOpen, "Transform"))
             {
-                auto& transform = entity.getComponent<TransformComponent>()._transform;
+                auto& transformComponent = entity.getComponent<TransformComponent>();
                 
-                ImGui::DragFloat3("Position", glm::value_ptr(transform[3]), 0.1f);
+                drawVec3Control("Translation", transformComponent._translation);
+                
+                glm::vec3 rotation = glm::degrees(transformComponent._rotation);
+                drawVec3Control("Rotation", rotation);
+                transformComponent._rotation = glm::radians(rotation);
 
+                drawVec3Control("Scale", transformComponent._scale, 1.0f, 0.01f);
                 ImGui::TreePop();
             }
         }

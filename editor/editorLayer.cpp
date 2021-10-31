@@ -50,17 +50,17 @@ namespace GraphicEngine
 
             void onUpdate(Timestep ts)
             {
-                auto& transform = getComponent<TransformComponent>()._transform;
+                auto& translation = getComponent<TransformComponent>()._translation;
                 float speed = 5.0f;
 
                 if (Input::isKeyPressed(65))      // AZERTY Q - Move Left
-                    transform[3][0] -= speed * ts;
+                    translation.x -= speed * ts;
                 else if (Input::isKeyPressed(68)) // AZERTY D - Move Right
-                    transform[3][0] += speed * ts;
+                    translation.x += speed * ts;
                 if (Input::isKeyPressed(87))      // AZERTY Z - Move Up
-                    transform[3][1] += speed * ts;
+                    translation.y += speed * ts;
                 else if (Input::isKeyPressed(83)) // AZERTY S - Move Down
-                    transform[3][1] -= speed * ts;
+                    translation.y -= speed * ts;
             }
 
             void onDestroy()

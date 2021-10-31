@@ -55,7 +55,7 @@ namespace GraphicEngine
 
         // Renders 2D sprites
         Camera* mainCamera = nullptr;
-        glm::mat4* mainCameraTransform = nullptr;
+        glm::mat4 mainCameraTransform;
         {
             auto view = _registry.view<TransformComponent, CameraComponent>();
             for (auto entity : view)
@@ -65,7 +65,7 @@ namespace GraphicEngine
                 if (camera._primary)
                 {
                     mainCamera = &camera._camera;
-                    mainCameraTransform = &transform._transform;
+                    mainCameraTransform = transform.getTransform();
                     break;
                 }
             }
@@ -73,14 +73,14 @@ namespace GraphicEngine
 
         if (mainCamera)
         {
-            Renderer2D::beginScene(mainCamera->getProjection(), *mainCameraTransform);
+            Renderer2D::beginScene(mainCamera->getProjection(), mainCameraTransform);
 
             auto group = _registry.group<TransformComponent>(entt::get<SpriteRendererComponent>);
             for (auto entity : group)
             {
                 const auto&[transform, sprite] = group.get<TransformComponent, SpriteRendererComponent>(entity);
 
-                Renderer2D::drawQuad(transform, sprite._color);
+                Renderer2D::drawQuad(transform.getTransform(), sprite._color);
             }
 
             Renderer2D::endScene();
