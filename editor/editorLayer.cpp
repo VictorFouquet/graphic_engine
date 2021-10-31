@@ -25,19 +25,16 @@ namespace GraphicEngine
 
         _activeScene = CreateRef<Scene>();
 
-        auto square = _activeScene->createEntity("Green Square");
-        square.addComponent<SpriteRendererComponent>(glm::vec4{ 0.0f, 1.0f, 0.0f, 1.0f });
-
-        auto redSquare = _activeScene->createEntity("Red Square");
-        redSquare.addComponent<SpriteRendererComponent>(glm::vec4{ 1.0f, 0.0f, 0.0f, 1.0f });
+        auto square = _activeScene->createEntity("Square");
+        square.addComponent<SpriteRendererComponent>(glm::vec4{ 1.0f, 1.0f, 1.0f, 1.0f });
 
         auto cameraEntity = _activeScene->createEntity("Scene Camera");
         cameraEntity.addComponent<CameraComponent>();
 
-        auto secondCamera = _activeScene->createEntity("Scene Camera 2");
-        auto& cc = secondCamera.addComponent<CameraComponent>();
+        // auto secondCamera = _activeScene->createEntity("Scene Camera 2");
+        // auto& cc = secondCamera.addComponent<CameraComponent>();
 
-        cc._primary = false;
+        // cc._primary = false;
 
         
         class CameraController : public ScriptableEntity
@@ -69,7 +66,7 @@ namespace GraphicEngine
             }
         };
 
-        secondCamera.addComponent<NativeScriptComponent>().bind<CameraController>();
+        // secondCamera.addComponent<NativeScriptComponent>().bind<CameraController>();
 
         _sceneHierarchyPanel.setContext(_activeScene);
     }
@@ -147,11 +144,16 @@ namespace GraphicEngine
 
         // Submit the DockSpace
         ImGuiIO& io = ImGui::GetIO();
+        ImGuiStyle& style = ImGui::GetStyle();
+        style.WindowMinSize.x = 370.0f;
+
         if (io.ConfigFlags & ImGuiConfigFlags_DockingEnable)
         {
             ImGuiID dockspace_id = ImGui::GetID("MyDockSpace");
             ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
         }
+
+        style.WindowMinSize.x = 32.0f;
 
         if (ImGui::BeginMenuBar())
         {

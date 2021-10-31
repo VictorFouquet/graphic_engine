@@ -78,6 +78,7 @@ namespace GraphicEngine
         
         if (mainCamera)
         {
+            // FIXME #1 - Sorting entities according to Z translation value
             auto group = _registry.group<TransformComponent>(entt::get<SpriteRendererComponent>);
 
             if (group.size())

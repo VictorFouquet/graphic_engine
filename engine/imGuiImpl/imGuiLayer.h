@@ -30,6 +30,7 @@ namespace GraphicEngine
         void end();
 
         void setBlockEvents(bool block) { _blockEvents = block; }
+        void setDarkThemeColors();
     private:
         bool _blockEvents = true;
     };
