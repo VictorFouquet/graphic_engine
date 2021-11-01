@@ -24,6 +24,7 @@ target_link_libraries(engine
     glfw
     glm
     entt
+    yaml-cpp
     openGLImpl
     imGuiImpl
     renderer

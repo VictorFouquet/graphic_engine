@@ -5,6 +5,7 @@
 
 #include "core.h"
 #include "component.h"
+#include "sceneSerializer.h"
 
 namespace GraphicEngine
 {
@@ -162,6 +163,17 @@ namespace GraphicEngine
                 if (ImGui::MenuItem("Exit"))
                     Engine::get().close();
 
+                if (ImGui::MenuItem("Serialize"))
+                {
+                    SceneSerializer serializer(_activeScene);
+                    serializer.serialize("editor/assets/scenes/Example.algv");
+                }
+
+                if (ImGui::MenuItem("Deserialize"))
+                {
+                    SceneSerializer serializer(_activeScene);
+                    serializer.deserialize("editor/assets/scenes/Example.algv");
+                }
                 ImGui::EndMenu();
             }
 

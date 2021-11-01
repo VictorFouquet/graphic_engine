@@ -2,6 +2,7 @@ add_library(scene STATIC
     scene.cpp
     entity.cpp
     sceneCamera.cpp
+    sceneSerializer.cpp
 )
 
 target_include_directories(engine INTERFACE
