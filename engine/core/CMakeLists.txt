@@ -29,4 +29,5 @@ target_link_libraries(engine
     imGuiImpl
     renderer
     scene
+    utils
 )

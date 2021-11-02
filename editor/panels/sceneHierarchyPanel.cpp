@@ -14,6 +14,7 @@ namespace GraphicEngine
     void SceneHierarchyPanel::setContext(const Ref<Scene>& context) 
     {
         _context = context;
+        _selectionContext = {};
     }
     
     void SceneHierarchyPanel::onImGuiRender() 

@@ -17,7 +17,16 @@ namespace GraphicEngine
         
         void onUpdate(Timestep timestep) override;
         void onEvent(Event& event) override;
+        
         void onImGuiRender();
+
+    private:
+        bool onKeyPressed(KeyPressedEvent& event);
+        void newScene();
+        void openScene();
+        void saveScene();
+        void saveSceneAs();
+
     private:
         OrthographicCameraController _cameraController;
         Ref<Shader> _shader;
@@ -36,5 +45,7 @@ namespace GraphicEngine
         bool _viewportFocused;
 
         SceneHierarchyPanel _sceneHierarchyPanel;
+
+        std::string _lattestScenePath = std::string();
     };
 }

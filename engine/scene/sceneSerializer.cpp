@@ -106,7 +106,7 @@ namespace GraphicEngine
 
         if (entity.hasComponent<TransformComponent>())
         {
-            out << YAML::Key << "Transform Component";
+            out << YAML::Key << "TransformComponent";
             out << YAML::BeginMap;
 
             auto& tc = entity.getComponent<TransformComponent>();

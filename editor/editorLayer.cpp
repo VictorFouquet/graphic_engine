@@ -6,6 +6,7 @@
 #include "core.h"
 #include "component.h"
 #include "sceneSerializer.h"
+#include "platformUtils.h"
 
 namespace GraphicEngine
 {
@@ -160,20 +161,42 @@ namespace GraphicEngine
         {
             if (ImGui::BeginMenu("File"))
             {
+                // if (ImGui::MenuItem("Serialize"))
+                // {
+                //     SceneSerializer serializer(_activeScene);
+                //     serializer.serialize("editor/assets/scenes/Example.algv");
+                // }
+
+                // if (ImGui::MenuItem("Deserialize"))
+                // {
+                //     SceneSerializer serializer(_activeScene);
+                //     serializer.deserialize("editor/assets/scenes/Example.algv");
+                // }
+
+                if (ImGui::MenuItem("New", "Ctrl+N"))
+                {
+                    newScene();
+                }
+
+                ImGui::Separator();
+
+                if (ImGui::MenuItem("Open...", "Ctrl+O"))
+                {
+                    openScene();
+                }
+
+                ImGui::Separator();
+
+                if (ImGui::MenuItem("Save As...", "Ctrl+Shift+S"))
+                {
+                    saveSceneAs();
+                }
+
+                ImGui::Separator();
+
                 if (ImGui::MenuItem("Exit"))
                     Engine::get().close();
 
-                if (ImGui::MenuItem("Serialize"))
-                {
-                    SceneSerializer serializer(_activeScene);
-                    serializer.serialize("editor/assets/scenes/Example.algv");
-                }
-
-                if (ImGui::MenuItem("Deserialize"))
-                {
-                    SceneSerializer serializer(_activeScene);
-                    serializer.deserialize("editor/assets/scenes/Example.algv");
-                }
                 ImGui::EndMenu();
             }
 
@@ -214,5 +237,99 @@ namespace GraphicEngine
     void EditorLayer::onEvent(Event& event) 
     {
         _cameraController.onEvent(event);
+
+        EventDispatcher dispatcher(event);
+        dispatcher.dispatch<KeyPressedEvent>(BIND_EVENT_FN(EditorLayer::onKeyPressed));
+
+    }
+
+    bool EditorLayer::onKeyPressed(KeyPressedEvent& e)
+    {
+        if (e.getRepeatCount() > 0)
+            return false;
+
+        // TODO: create key code file
+        const unsigned int CTRL_LEFT   = 341;
+        const unsigned int CTRL_RIGHT  = 345;
+        const unsigned int SHIFT_LEFT  = 340;
+        const unsigned int SHIFT_RIGHT = 344;
+        const unsigned int N_KEY       =  78;
+        const unsigned int O_KEY       =  79;
+        const unsigned int S_KEY       =  83;
+
+        bool controlPressed = Input::isKeyPressed(CTRL_LEFT) || Input::isKeyPressed(CTRL_RIGHT);
+        bool shiftPressed = Input::isKeyPressed(SHIFT_LEFT) || Input::isKeyPressed(SHIFT_RIGHT);
+
+        switch (e.GetKeyCode())
+        {
+            case S_KEY:
+            {
+                if (controlPressed && shiftPressed)
+                    saveSceneAs();
+                else if (controlPressed)
+                    saveScene();
+                break;
+            }
+            case N_KEY:
+            {
+                if (controlPressed)
+                    newScene();
+                break;
+            }
+            case O_KEY:
+            {
+                if (controlPressed)
+                    openScene();
+                break;
+            }
+            default:
+                break;
+        }
+        return false;
+    }
+    
+    void EditorLayer::newScene() 
+    {
+        _activeScene = CreateRef<Scene>();
+        _activeScene->onViewportResize((uint32_t)_viewportSize.x, (uint32_t)_viewportSize.y);
+        _sceneHierarchyPanel.setContext(_activeScene);
+    }
+    
+    void EditorLayer::openScene() 
+    {
+        std::string out = FileDialog::openFile("algv");
+        if (out.size())
+        {
+            _activeScene = CreateRef<Scene>();
+            _activeScene->onViewportResize((uint32_t)_viewportSize.x, (uint32_t)_viewportSize.y);
+            _sceneHierarchyPanel.setContext(_activeScene);
+            _lattestScenePath = out;
+
+            SceneSerializer serializer(_activeScene);
+            serializer.deserialize(out);
+        }
+    }
+    
+    void EditorLayer::saveScene() 
+    {
+        if (_lattestScenePath.size())
+        {
+            SceneSerializer serializer(_activeScene);
+            serializer.serialize(_lattestScenePath);
+        }
+        else
+            saveSceneAs();
+
+    }
+    
+    void EditorLayer::saveSceneAs() 
+    {
+        std::string out = FileDialog::saveFile("algv");
+        if (out.size())
+        {
+            _lattestScenePath = out;
+            SceneSerializer serializer(_activeScene);
+            serializer.serialize(out);
+        }
     }
 }
