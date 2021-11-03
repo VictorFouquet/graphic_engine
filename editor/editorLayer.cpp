@@ -121,8 +121,8 @@ namespace GraphicEngine
         if (opt_fullscreen)
         {
             const ImGuiViewport* viewport = ImGui::GetMainViewport();
-            ImGui::SetNextWindowPos(viewport->WorkPos);
-            ImGui::SetNextWindowSize(viewport->WorkSize);
+            ImGui::SetNextWindowPos(viewport->Pos);
+            ImGui::SetNextWindowSize(viewport->Size);
             ImGui::SetNextWindowViewport(viewport->ID);
             ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
             ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
@@ -212,6 +212,12 @@ namespace GraphicEngine
         ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0,0));
         ImGui::Begin("Viewport");
 
+        auto viewportMinRegion = ImGui::GetWindowContentRegionMin();
+		auto viewportMaxRegion = ImGui::GetWindowContentRegionMax();
+		auto viewportOffset = ImGui::GetWindowPos();
+		_viewportBounds[0] = { viewportMinRegion.x + viewportOffset.x, viewportMinRegion.y + viewportOffset.y };
+		_viewportBounds[1] = { viewportMaxRegion.x + viewportOffset.x, viewportMaxRegion.y + viewportOffset.y };
+
         _viewportFocused = ImGui::IsWindowFocused();
         Engine::get().getImGuiLayer()->setBlockEvents(!_viewportFocused);
 
@@ -240,26 +246,6 @@ namespace GraphicEngine
                 float windowHeight = (float)ImGui::GetWindowHeight();
                 float mainWindowHeight = Engine::get().getWindow().getHeight();
 
-                const glm::mat4& cameraProjection = camera.getProjection();
-                glm::mat4 cameraView = glm::inverse(cameraEntity.getComponent<TransformComponent>().getTransform());
-
-                std::cout << ImGui::GetWindowPos().y << std::endl;
-                std::cout << ImGui::GetContentRegionAvail().y << std::endl;
-                std::cout << "mainwindowHeight: " << Engine::get().getWindow().getHeight() << std::endl;
-                std::cout << "windowHeight: " << windowHeight << std::endl;
-                std::cout << "posY: " << ImGui::GetMainViewport()->Pos.y << std::endl;
-                std::cout << "WorkposY: " << ImGui::GetMainViewport()->WorkPos.y << std::endl;
-                std::cout << "sizeY: " << ImGui::GetMainViewport()->Size.y << std::endl;
-                std::cout << "WorksizeY: " << ImGui::GetMainViewport()->WorkSize.y << std::endl;
-                std::cout << "dpiScale: " << ImGui::GetMainViewport()->DpiScale << std::endl;
-                std::cout << "centerY: " << ImGui::GetMainViewport()->GetCenter().y << std::endl;
-                std::cout << "lineHeight: " << GImGui->Font->FontSize + GImGui->Style.FramePadding.y << std::endl;
-                ImGuiIO& io = ImGui::GetIO();
-
-                std::cout << "lineHeight2: " << GImGui->Style.FramePadding.y * 2 - ImGui::GetContentRegionAvail().y << std::endl;
-
-                std::cout << "lineHeight2: " << io.Fonts->Fonts[1]->FontSize << std::endl;
-
                 // When setting rectangle with ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, windowWidth, windowHeight
                 // gizmos are padded 10px down.
                 // As values are given in pixels in ImGuizmo, we can hard code this value.
@@ -268,7 +254,14 @@ namespace GraphicEngine
                 // or alternatively :
                 // GImGui->Style.FramePadding.y * 2 - ImGui::GetContentRegionAvail().y
                 float posY =  ImGui::GetWindowPos().y + (ImGui::GetMainViewport()->Size.y - ImGui::GetWindowHeight()) / 2;
-                ImGuizmo::SetRect(ImGui::GetWindowPos().x, posY, windowWidth, windowHeight);
+
+                const glm::mat4& cameraProjection = camera.getProjection();
+                glm::mat4 cameraView = glm::inverse(cameraEntity.getComponent<TransformComponent>().getTransform());
+
+                //ImGuizmo::SetRect(ImGui::GetWindowPos().x, posY, windowWidth, windowHeight);
+                ImGuizmo::SetRect(_viewportBounds[0].x, _viewportBounds[0].y, 
+                    _viewportBounds[1].x - _viewportBounds[0].x, _viewportBounds[1].y - _viewportBounds[0].y);
+
                 ImGuizmo::SetOrthographic(cameraIsOrtho);
                 ImGuizmo::SetDrawlist();
 
@@ -276,17 +269,17 @@ namespace GraphicEngine
                 auto& tc = selectedEntity.getComponent<TransformComponent>();
                 glm::mat4 transform = tc.getTransform();
 
-                // float to[16] = {
-                //     transform[0][0], transform[0][1], transform[0][2], transform[0][3],
-                //     transform[1][0], transform[1][1], transform[1][2], transform[1][3],
-                //     transform[2][0], transform[2][1], transform[2][2], transform[2][3],
-                //     transform[3][0], transform[3][1], transform[2][2] ? transform[2][2] : 0.00001f, transform[3][3],
-                // };
+                float to[16] = {
+                    transform[0][0], transform[0][1], transform[0][2], transform[0][3],
+                    transform[1][0], transform[1][1], transform[1][2], transform[1][3],
+                    transform[2][0], transform[2][1], transform[2][2], transform[2][3],
+                    transform[3][0], transform[3][1], transform[2][2] /* ? transform[2][2] : 0.00001f*/, transform[3][3],
+                };
 
-                // glm::mat4 transformOrth = glm::make_mat4(to);
+                glm::mat4 transformOrth = glm::make_mat4(to);
                 
                 ImGuizmo::Manipulate(glm::value_ptr(cameraView), glm::value_ptr(cameraProjection),
-                    ImGuizmo::OPERATION::TRANSLATE, ImGuizmo::WORLD , glm::value_ptr(/*cameraIsOrtho ? transformOrth : */transform));
+                    ImGuizmo::OPERATION::TRANSLATE, ImGuizmo::WORLD , glm::value_ptr(/*cameraIsOrtho ? transformOrth :*/ transform));
                 
 
                 if (ImGuizmo::IsUsing())

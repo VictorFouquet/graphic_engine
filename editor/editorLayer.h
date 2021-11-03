@@ -42,6 +42,7 @@ namespace GraphicEngine
         Ref<Texture2D> _texture;
 
         glm::vec2 _viewportSize = { 0.0f, 0.0f };
+        glm::vec2 _viewportBounds[2];
         bool _viewportFocused;
 
         SceneHierarchyPanel _sceneHierarchyPanel;
