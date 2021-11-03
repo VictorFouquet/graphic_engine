@@ -2,6 +2,7 @@
 
 #include "glm/gtc/type_ptr.hpp"
 #include "glm/gtc/matrix_transform.hpp"
+#include "ImGuizmo.h"
 
 #include "core.h"
 #include "component.h"
@@ -27,18 +28,14 @@ namespace GraphicEngine
 
         _activeScene = CreateRef<Scene>();
 
+#if CREATE_BASIC_DEMO_SCENE
         auto square = _activeScene->createEntity("Square");
         square.addComponent<SpriteRendererComponent>(glm::vec4{ 1.0f, 1.0f, 1.0f, 1.0f });
 
         auto cameraEntity = _activeScene->createEntity("Scene Camera");
         cameraEntity.addComponent<CameraComponent>();
 
-        // auto secondCamera = _activeScene->createEntity("Scene Camera 2");
-        // auto& cc = secondCamera.addComponent<CameraComponent>();
-
-        // cc._primary = false;
-
-        
+    #if CREATE_SECOND_CAMERA
         class CameraController : public ScriptableEntity
         {
         public:
@@ -68,8 +65,15 @@ namespace GraphicEngine
             }
         };
 
-        // secondCamera.addComponent<NativeScriptComponent>().bind<CameraController>();
+        auto secondCamera = _activeScene->createEntity("Scene Camera 2");
+        auto& cc = secondCamera.addComponent<CameraComponent>();
 
+        cc._primary = false;
+
+        secondCamera.addComponent<NativeScriptComponent>().bind<CameraController>();
+    #endif
+
+#endif
         _sceneHierarchyPanel.setContext(_activeScene);
     }
 
@@ -161,18 +165,6 @@ namespace GraphicEngine
         {
             if (ImGui::BeginMenu("File"))
             {
-                // if (ImGui::MenuItem("Serialize"))
-                // {
-                //     SceneSerializer serializer(_activeScene);
-                //     serializer.serialize("editor/assets/scenes/Example.algv");
-                // }
-
-                // if (ImGui::MenuItem("Deserialize"))
-                // {
-                //     SceneSerializer serializer(_activeScene);
-                //     serializer.deserialize("editor/assets/scenes/Example.algv");
-                // }
-
                 if (ImGui::MenuItem("New", "Ctrl+N"))
                 {
                     newScene();
@@ -228,6 +220,56 @@ namespace GraphicEngine
         uint64_t textureID = _frameBuffer->getColorAttachmentRendererID();
 
         ImGui::Image(reinterpret_cast<void*>(textureID), ImVec2{ viewportPanelSize.x, viewportPanelSize.y }, ImVec2( 0, 1), ImVec2( 1, 0 ) );
+        
+        // Guizmos
+        Entity selectedEntity = _sceneHierarchyPanel.getSelectedEntity();
+
+        if (selectedEntity)
+        {
+            if (selectedEntity != _activeScene->getPrimaryCameraEntity())
+            {
+
+                // Camera
+                auto cameraEntity = _activeScene->getPrimaryCameraEntity();
+                const auto& camera = cameraEntity.getComponent<CameraComponent>()._camera;
+                bool cameraIsOrtho = (bool)camera.getProjectionType();
+
+                std::cout << cameraIsOrtho << std::endl;
+                float windowWidth = (float)ImGui::GetWindowWidth();
+                float windowHeight = (float)ImGui::GetWindowHeight();
+                
+                const glm::mat4& cameraProjection = camera.getProjection();
+                glm::mat4 cameraView = glm::inverse(cameraEntity.getComponent<TransformComponent>().getTransform());
+
+                ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, windowWidth, windowHeight);
+                ImGuizmo::SetOrthographic(cameraIsOrtho);
+                ImGuizmo::SetDrawlist();
+
+                // Entity transform
+                auto& tc = selectedEntity.getComponent<TransformComponent>();
+                glm::mat4 transform = tc.getTransform();
+
+                // float to[16] = {
+                //     transform[0][0], transform[0][1], transform[0][2], transform[0][3],
+                //     transform[1][0], transform[1][1], transform[1][2], transform[1][3],
+                //     transform[2][0], transform[2][1], transform[2][2], transform[2][3],
+                //     transform[3][0], transform[3][1], transform[2][2] ? transform[2][2] : 0.00001f, transform[3][3],
+                // };
+
+                // glm::mat4 transformOrth = glm::make_mat4(to);
+                
+                ImGuizmo::Manipulate(glm::value_ptr(cameraView), glm::value_ptr(cameraProjection),
+                    ImGuizmo::OPERATION::TRANSLATE, ImGuizmo::WORLD , glm::value_ptr(/*cameraIsOrtho ? transformOrth : */transform));
+                
+
+                if (ImGuizmo::IsUsing())
+                {
+                    tc._translation = glm::vec3((/*cameraIsOrtho ? transformOrth : */transform)[3]);
+                }
+            }
+
+        }
+        
         ImGui::End();
         ImGui::PopStyleVar();
 

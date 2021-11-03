@@ -1,5 +1,7 @@
 #include "imGuiLayer.h"
 
+#include "ImGuizmo.h"
+
 namespace GraphicEngine
 {
     ImGuiLayer::ImGuiLayer()
@@ -60,6 +62,7 @@ namespace GraphicEngine
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
+        ImGuizmo::BeginFrame();
     }
 
     void ImGuiLayer::end()

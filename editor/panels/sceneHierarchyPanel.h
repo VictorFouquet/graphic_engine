@@ -16,6 +16,8 @@ namespace GraphicEngine
 
         void setContext(const Ref<Scene>& context);
         void onImGuiRender();
+
+        Entity getSelectedEntity() const { return _selectionContext; }
     private:
         void drawEntityNode(Entity entity);
         void drawComponents(Entity entity);

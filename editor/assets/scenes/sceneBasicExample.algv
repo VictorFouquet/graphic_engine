@@ -2,7 +2,7 @@ Scene: Untitled
 Entities:
   - Entity: 192837465564738291
     TagComponent:
-      Tag: Camera
+      Tag: Scene Camera
     TransformComponent:
       Translation: [0, 0, 0]
       Rotation: [0, 0, 0]
@@ -22,8 +22,8 @@ Entities:
     TagComponent:
       Tag: Square
     TransformComponent:
-      Translation: [0, 0, 0]
+      Translation: [0, 0, 1]
       Rotation: [0, 0, 0]
       Scale: [1, 1, 1]
     SpriteRendererComponent:
-      Color: [1, 1, 1, 1]
+      Color: [0.800000012, 0.565581441, 0.565581441, 1]

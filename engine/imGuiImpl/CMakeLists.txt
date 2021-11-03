@@ -10,5 +10,6 @@ target_include_directories(imGuiImpl PUBLIC
 target_link_libraries(imGuiImpl
     precompiledHeaders
     imgui
+    imGuizmo
     engine
 )

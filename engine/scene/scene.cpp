@@ -112,6 +112,19 @@ namespace GraphicEngine
             }
         }
     }
+    
+    Entity Scene::getPrimaryCameraEntity() 
+    {
+        auto view = _registry.view<CameraComponent>();
+        for (auto entity : view)
+        {
+            auto& camera = view.get<CameraComponent>(entity);
+            if (camera._primary)
+                return Entity{ entity, this };
+        }
+
+        return {};
+    }
 
     // template<typename T>
     // void Scene::onComponentAdded(Entity entity, T& component)
