@@ -3,6 +3,7 @@
 #include "glm/gtc/type_ptr.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 #include "ImGuizmo.h"
+#include "imgui_internal.h"
 
 #include "core.h"
 #include "component.h"
@@ -237,11 +238,37 @@ namespace GraphicEngine
                 std::cout << cameraIsOrtho << std::endl;
                 float windowWidth = (float)ImGui::GetWindowWidth();
                 float windowHeight = (float)ImGui::GetWindowHeight();
-                
+                float mainWindowHeight = Engine::get().getWindow().getHeight();
+
                 const glm::mat4& cameraProjection = camera.getProjection();
                 glm::mat4 cameraView = glm::inverse(cameraEntity.getComponent<TransformComponent>().getTransform());
 
-                ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, windowWidth, windowHeight);
+                std::cout << ImGui::GetWindowPos().y << std::endl;
+                std::cout << ImGui::GetContentRegionAvail().y << std::endl;
+                std::cout << "mainwindowHeight: " << Engine::get().getWindow().getHeight() << std::endl;
+                std::cout << "windowHeight: " << windowHeight << std::endl;
+                std::cout << "posY: " << ImGui::GetMainViewport()->Pos.y << std::endl;
+                std::cout << "WorkposY: " << ImGui::GetMainViewport()->WorkPos.y << std::endl;
+                std::cout << "sizeY: " << ImGui::GetMainViewport()->Size.y << std::endl;
+                std::cout << "WorksizeY: " << ImGui::GetMainViewport()->WorkSize.y << std::endl;
+                std::cout << "dpiScale: " << ImGui::GetMainViewport()->DpiScale << std::endl;
+                std::cout << "centerY: " << ImGui::GetMainViewport()->GetCenter().y << std::endl;
+                std::cout << "lineHeight: " << GImGui->Font->FontSize + GImGui->Style.FramePadding.y << std::endl;
+                ImGuiIO& io = ImGui::GetIO();
+
+                std::cout << "lineHeight2: " << GImGui->Style.FramePadding.y * 2 - ImGui::GetContentRegionAvail().y << std::endl;
+
+                std::cout << "lineHeight2: " << io.Fonts->Fonts[1]->FontSize << std::endl;
+
+                // When setting rectangle with ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, windowWidth, windowHeight
+                // gizmos are padded 10px down.
+                // As values are given in pixels in ImGuizmo, we can hard code this value.
+                // It can also be retrieved by :
+                // ImGui::GetWindowPos().y + (ImGui::GetMainViewport()->Size.y - ImGui::GetWindowHeight()) / 2
+                // or alternatively :
+                // GImGui->Style.FramePadding.y * 2 - ImGui::GetContentRegionAvail().y
+                float posY =  ImGui::GetWindowPos().y + (ImGui::GetMainViewport()->Size.y - ImGui::GetWindowHeight()) / 2;
+                ImGuizmo::SetRect(ImGui::GetWindowPos().x, posY, windowWidth, windowHeight);
                 ImGuizmo::SetOrthographic(cameraIsOrtho);
                 ImGuizmo::SetDrawlist();
 
