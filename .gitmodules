@@ -10,3 +10,6 @@
 [submodule "vendor/nfd"]
 	path = vendor/nfd
 	url = https://github.com/btzy/nativefiledialog-extended.git
+[submodule "vendor/ImGuizmo"]
+	path = vendor/ImGuizmo
+	url = git@github.com:VictorFouquet/ImGuizmo.git
